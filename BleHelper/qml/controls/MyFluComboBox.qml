@@ -62,47 +62,53 @@ T.ComboBox {
         }
     }
     focusPolicy: Qt.TabFocus
-    indicator: Button {
-        id: indicator_button
+    indicator: Item {
         x: control.mirrored ? control.padding : control.width - width - control.padding
         y: control.topPadding + (control.availableHeight - height) / 2
-        width: 40
-        enabled: control.enabled && control.editable
-        background: Item {
-            Rectangle {
-                anchors.centerIn: parent
-                implicitWidth: 32
-                implicitHeight: 24
-                radius: 4
-                color: {
-                    if (!indicator_button.enabled) {
-                        return FluTheme.itemNormalColor;
-                    }
-                    if (indicator_button.pressed) {
-                        return FluTheme.itemPressColor;
-                    }
-                    return indicator_button.hovered ? FluTheme.itemHoverColor : FluTheme.itemNormalColor;
-                }
-            }
-        }
-        contentItem: Item {
-            FluIcon {
-                anchors.fill: parent
-                anchors.topMargin: control.pressed || indicator_button.pressed ? 2 : 0
-                Behavior on anchors.topMargin {
-                    enabled: FluTheme.animationEnabled
-                    NumberAnimation {
-                        easing.type: Easing.InOutBounce
-                        duration: 167
+        width: 30
+
+        Button {
+            id: indicator_button
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.right: parent.right
+            anchors.rightMargin: 8
+            enabled: control.enabled && control.editable
+            background: Item {
+                Rectangle {
+                    anchors.centerIn: parent
+                    implicitWidth: 24
+                    implicitHeight: 24
+                    radius: 4
+                    color: {
+                        if (!indicator_button.enabled) {
+                            return FluTheme.itemNormalColor;
+                        }
+                        if (indicator_button.pressed) {
+                            return FluTheme.itemPressColor;
+                        }
+                        return indicator_button.hovered ? FluTheme.itemHoverColor : FluTheme.itemNormalColor;
                     }
                 }
-                iconSource: FluentIcons.ChevronDown
-                iconSize: 8
-                opacity: control.enabled ? 1 : 0.3
             }
-        }
-        onClicked: {
-            control.popup.visible = true;
+            contentItem: Item {
+                FluIcon {
+                    anchors.fill: parent
+                    anchors.topMargin: control.pressed || indicator_button.pressed ? 2 : 0
+                    Behavior on anchors.topMargin {
+                        enabled: FluTheme.animationEnabled
+                        NumberAnimation {
+                            easing.type: Easing.InOutBounce
+                            duration: 167
+                        }
+                    }
+                    iconSource: FluentIcons.ChevronDown
+                    iconSize: 8
+                    opacity: control.enabled ? 1 : 0.3
+                }
+            }
+            onClicked: {
+                control.popup.visible = true;
+            }
         }
     }
 

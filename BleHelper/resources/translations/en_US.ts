@@ -183,13 +183,76 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/windows/MainWindow.qml" line="492"/>
+        <location filename="../../qml/windows/MainWindow.qml" line="491"/>
         <source>The application is up to date.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/windows/MainWindow.qml" line="497"/>
+        <location filename="../../qml/windows/MainWindow.qml" line="499"/>
         <source>Failed to connect to server. Check your network connection and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>MyFluColorPicker</name>
+    <message>
+        <location filename="../../qml/controls/MyFluColorPicker.qml" line="26"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/controls/MyFluColorPicker.qml" line="27"/>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/controls/MyFluColorPicker.qml" line="28"/>
+        <source>Color Picker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/controls/MyFluColorPicker.qml" line="29"/>
+        <source>Red</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/controls/MyFluColorPicker.qml" line="30"/>
+        <source>Green</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/controls/MyFluColorPicker.qml" line="31"/>
+        <source>Blue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/controls/MyFluColorPicker.qml" line="32"/>
+        <source>Hue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/controls/MyFluColorPicker.qml" line="33"/>
+        <source>Saturation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/controls/MyFluColorPicker.qml" line="34"/>
+        <source>Value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/controls/MyFluColorPicker.qml" line="35"/>
+        <source>Opacity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/controls/MyFluColorPicker.qml" line="36"/>
+        <source>More</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/controls/MyFluColorPicker.qml" line="37"/>
+        <source>Less</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -265,91 +328,91 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="161"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="164"/>
         <source>Preset Colors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="206"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="214"/>
         <source>Custom Colors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="246"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="245"/>
+        <source>View Colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/SettingsPage.qml" line="260"/>
         <source>Animation Effects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="259"/>
-        <location filename="../../qml/pages/SettingsPage.qml" line="287"/>
-        <location filename="../../qml/pages/SettingsPage.qml" line="315"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="273"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="301"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="329"/>
         <source>On</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="259"/>
-        <location filename="../../qml/pages/SettingsPage.qml" line="287"/>
-        <location filename="../../qml/pages/SettingsPage.qml" line="315"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="273"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="301"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="329"/>
         <source>Off</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="274"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="288"/>
         <source>Transparency Effects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="302"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="316"/>
         <source>Use Native Text Rendering</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="326"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="340"/>
         <source>Localization</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="338"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="352"/>
         <source>Language</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="368"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="382"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="399"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="410"/>
         <source>BLE Helper</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="418"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="460"/>
         <source>Check for Updates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="443"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="487"/>
         <source>Author: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="450"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="494"/>
         <source>Built on: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="458"/>
-        <source>From revision: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="483"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="507"/>
         <source>Check out this project on GitHub</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="499"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="523"/>
         <source>Dependencies &amp; References</source>
         <translation type="unfinished"></translation>
     </message>

@@ -477,7 +477,6 @@ FluWindow {
         console.debug("start check update...");
         var url = "https://api.github.com/repos/lucky9loogn/BleHelper/releases/latest";
         window.sendRequest(url, function (response) {
-            FluEventBus.post("checkUpdateFinish");
             if (response.status === 200) {
                 // 200 OK: 请求成功，服务器返回了请求的数据
                 var data = JSON.parse(response.content);
@@ -492,11 +491,17 @@ FluWindow {
                         showInfo(qsTr("The application is up to date."));
                     }
                 }
+                FluEventBus.post("checkUpdateFinish", {
+                    "status": "success"
+                });
             } else {
                 if (!silent) {
                     showError(qsTr("Failed to connect to server. Check your network connection and try again."));
                 }
                 console.debug("Check update error: " + response.status);
+                FluEventBus.post("checkUpdateFinish", {
+                    "status": "failed"
+                });
             }
         });
     }

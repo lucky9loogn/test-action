@@ -57,7 +57,7 @@ FluScrollablePage {
                     right: parent.right
                     verticalCenter: parent.verticalCenter
                 }
-                width: Math.max(200, implicitWidth)
+                width: Math.max(180, implicitWidth)
                 textRole: "text"
                 valueRole: "value"
                 onActivated: {
@@ -104,7 +104,7 @@ FluScrollablePage {
                     right: parent.right
                     verticalCenter: parent.verticalCenter
                 }
-                width: Math.max(200, implicitWidth)
+                width: Math.max(180, implicitWidth)
                 textRole: "text"
                 valueRole: "value"
                 onActivated: {
@@ -143,17 +143,20 @@ FluScrollablePage {
             contentHeight: accent_color_expander_content_container.implicitHeight
             expand: true
             headerText: qsTr("Accent Color")
-            content: Item {
+            content: ColumnLayout {
+                id: accent_color_expander_content_container
                 anchors.fill: parent
 
                 ColumnLayout {
-                    id: accent_color_expander_content_container
-                    anchors.fill: parent
+                    Layout.topMargin: 16
+                    Layout.bottomMargin: 16
+
+                    spacing: 16
+
                     RowLayout {
-                        Layout.fillWidth: true
-                        Layout.topMargin: 16
                         Layout.leftMargin: 16
                         Layout.rightMargin: 16
+                        Layout.fillWidth: true
 
                         FluText {
                             Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
@@ -161,14 +164,14 @@ FluScrollablePage {
                             text: qsTr("Preset Colors")
                         }
 
-                        RowLayout {
-                            Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+                        Row {
+                            Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
                             spacing: 4
                             Repeater {
                                 model: GlobalModel.presetColors
                                 delegate: Rectangle {
-                                    width: 36
-                                    height: 36
+                                    width: 30
+                                    height: 30
                                     radius: 4
                                     color: accent_color_item_mouse_area.containsMouse ? Qt.lighter(modelData.normal, 1.1) : modelData.normal
                                     border.color: modelData.darker
@@ -194,11 +197,16 @@ FluScrollablePage {
                         }
                     }
 
-                    RowLayout {
+                    FluDivider {
                         Layout.fillWidth: true
-                        Layout.bottomMargin: 16
+                        orientation: Qt.Horizontal
+                    }
+
+                    RowLayout {
                         Layout.leftMargin: 16
                         Layout.rightMargin: 16
+                        Layout.fillWidth: true
+                        spacing: 12
 
                         FluText {
                             Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
@@ -206,13 +214,21 @@ FluScrollablePage {
                             text: qsTr("Custom Colors")
                         }
 
-                        FluColorPicker {
+                        MyFluColorPicker {
                             id: theme_color_picker
-                            Layout.rightMargin: -4
-                            Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
-                            width: 42
-                            height: 42
+                            Layout.alignment: Qt.AlignVCenter
+                            width: 30
+                            height: 30
+                            enabled: false
+                            isAlphaEnabled: false
+                            dialogHeight: 465
                             current: FluTheme.accentColor.normal
+                            background: Rectangle {
+                                radius: 5
+                                color: theme_color_picker.current
+                                border.color: FluTheme.dividerColor
+                            }
+                            visible: !GlobalModel.presetColors.includes(FluTheme.accentColor)
                             onAccepted: {
                                 FluTheme.accentColor = GlobalModel.createAccentColor(current);
                                 SettingsManager.saveAccentNormalColor(current);
@@ -221,16 +237,14 @@ FluScrollablePage {
                                 anchors.centerIn: parent
                                 iconSource: FluentIcons.AcceptMedium
                                 iconSize: 16
-                                visible: {
-                                    for (var i = 0; i < GlobalModel.presetColors.length; i++) {
-                                        if (GlobalModel.presetColors[i] === FluTheme.accentColor) {
-                                            return false;
-                                        }
-                                    }
-                                    return true;
-                                }
                                 color: FluTheme.dark ? Qt.rgba(0, 0, 0, 1) : Qt.rgba(1, 1, 1, 1)
                             }
+                        }
+
+                        FluButton {
+                            text: qsTr("View Colors")
+                            Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+                            onClicked: theme_color_picker.clicked()
                         }
                     }
                 }
@@ -347,7 +361,7 @@ FluScrollablePage {
                     right: parent.right
                     verticalCenter: parent.verticalCenter
                 }
-                width: Math.max(200, implicitWidth)
+                width: Math.max(180, implicitWidth)
                 valueRole: "code"
                 textRole: "name"
                 onActivated: {
@@ -379,22 +393,19 @@ FluScrollablePage {
             headerDelegate: Component {
                 Item {
                     RowLayout {
-                        spacing: 16
+                        spacing: 12
                         anchors {
                             left: parent.left
                             verticalCenter: parent.verticalCenter
                         }
 
                         FluImage {
-                            width: 36
-                            height: 36
-                            sourceSize.width: 36
-                            sourceSize.height: 36
+                            sourceSize.width: 30
+                            sourceSize.height: 30
                             source: "qrc:/resources/images/icons/logo.svg"
                         }
 
-                        ColumnLayout {
-                            spacing: 4
+                        Column {
                             FluText {
                                 text: qsTr("BLE Helper")
                             }
@@ -408,21 +419,54 @@ FluScrollablePage {
 
                     FluEvent {
                         name: "checkUpdateFinish"
-                        onTriggered: {
-                            check_update_button.loading = false;
+                        onTriggered: function (arg) {
+                            if (arg.status === "success") {
+                                check_for_update_success_icon.visible = true;
+                            } else {
+                                check_for_update_button.enabled = true;
+                            }
+                            check_for_update_progress_ring.visible = false;
                         }
                     }
 
-                    FluLoadingButton {
-                        id: check_update_button
+                    Item {
+                        width: 24
+                        height: 24
+                        anchors {
+                            right: check_for_update_button.left
+                            rightMargin: 12
+                            verticalCenter: parent.verticalCenter
+                        }
+
+                        FluProgressRing {
+                            id: check_for_update_progress_ring
+                            anchors.fill: parent
+                            anchors.centerIn: parent
+                            strokeWidth: 3
+                            visible: false
+                            background: Item {}
+                        }
+
+                        FluIcon {
+                            id: check_for_update_success_icon
+                            visible: false
+                            anchors.centerIn: parent
+                            iconSource: FluentIcons.CheckMark
+                        }
+                    }
+
+                    FluButton {
+                        id: check_for_update_button
                         text: qsTr("Check for Updates")
                         anchors {
                             right: parent.right
-                            rightMargin: 8
+                            rightMargin: 12
                             verticalCenter: parent.verticalCenter
                         }
                         onClicked: {
-                            loading = true;
+                            check_for_update_button.enabled = false;
+                            check_for_update_success_icon.visible = false;
+                            check_for_update_progress_ring.visible = true;
                             FluEventBus.post("checkForUpdates");
                         }
                     }
@@ -451,28 +495,8 @@ FluScrollablePage {
                         font.pixelSize: 12
                     }
 
-                    RowLayout {
-                        Layout.leftMargin: 16
-
-                        FluText {
-                            text: qsTr("From revision: ")
-                            font.pixelSize: 12
-                            Layout.alignment: Qt.AlignVCenter
-                        }
-
-                        MyFluTextButton {
-                            Layout.leftMargin: -10
-                            Layout.alignment: Qt.AlignVCenter
-                            text: ApplicationInfo.versionHash
-                            font.pixelSize: 12
-                            onClicked: {
-                                Qt.openUrlExternally("https://github.com/lucky9loogn/BleHelper/commit/" + ApplicationInfo.versionHash);
-                            }
-                        }
-                    }
-
                     FluDivider {
-                        Layout.topMargin: 5
+                        Layout.topMargin: 16
                         Layout.fillWidth: true
                         orientation: Qt.Horizontal
                     }
