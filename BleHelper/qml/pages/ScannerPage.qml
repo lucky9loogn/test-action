@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Window
+
+import BleHelper
 import FluentUI
 
 import "../controls"

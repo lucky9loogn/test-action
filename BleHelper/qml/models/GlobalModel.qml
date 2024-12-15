@@ -1,6 +1,8 @@
 pragma Singleton
 
 import QtQuick
+
+import BleHelper
 import FluentUI
 
 QtObject {

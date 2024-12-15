@@ -7,6 +7,9 @@ ApplicationInfo::ApplicationInfo(QObject *parent) : QObject(parent)
     versionName(VERSION_NAME);
     buildDateTime(BUILD_DATE_TIME);
     author(AUTHOR);
+    repositoryUrl(REPOSITORY_URL);
+    updateCheckUrl(UPDATE_CHECK_URL);
+    updateUrl(UPDATE_URL);
 }
 
 ApplicationInfo::~ApplicationInfo() = default;

@@ -28,9 +28,15 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick)
 
 # 获取当前构建时间
 string(TIMESTAMP BUILD_DATE_TIME "%Y-%m-%d %H:%M:%S")
-
-# 设置软件作者
+# 软件作者
 set(AUTHOR "lucky9loogn")
+# 源代码仓库地址
+set(REPOSITORY_URL "https://github.com/lucky9loogn/BleHelper")
+# 用于检查更新的网络地址
+set(UPDATE_CHECK_URL
+    "https://api.github.com/repos/lucky9loogn/BleHelper/releases/latest")
+# 软件最新版本的下载地址
+set(UPDATE_URL "https://github.com/lucky9loogn/BleHelper/releases/latest")
 
 # 生成版本信息头文件
 set(HEADER_FILE_VERSION_PATH

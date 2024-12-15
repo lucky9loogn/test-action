@@ -2,6 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Window
+
+import BleHelper
 import FluentUI
 
 import "../controls"
@@ -417,18 +419,6 @@ FluScrollablePage {
                         }
                     }
 
-                    FluEvent {
-                        name: "checkUpdateFinish"
-                        onTriggered: function (arg) {
-                            if (arg.status === "success") {
-                                check_for_update_success_icon.visible = true;
-                            } else {
-                                check_for_update_button.enabled = true;
-                            }
-                            check_for_update_progress_ring.visible = false;
-                        }
-                    }
-
                     Item {
                         width: 24
                         height: 24
@@ -467,8 +457,59 @@ FluScrollablePage {
                             check_for_update_button.enabled = false;
                             check_for_update_success_icon.visible = false;
                             check_for_update_progress_ring.visible = true;
-                            FluEventBus.post("checkForUpdates");
+                            checkForUpdates();
                         }
+                    }
+
+                    FluContentDialog {
+                        id: update_dialog
+                        property string newVerson
+                        property string releaseInfo
+                        title: qsTr("Software Update")
+                        message: qsTr("There is a new update available: ") + qsTr("BLE Helper") + " " + newVerson + "\n\n" + releaseInfo
+                        buttonFlags: FluContentDialogType.NegativeButton | FluContentDialogType.PositiveButton
+                        negativeText: qsTr("Cancel")
+                        positiveText: qsTr("Update Now")
+                        onPositiveClicked: {
+                            Qt.openUrlExternally(ApplicationInfo.updateUrl);
+                        }
+
+                        function show(newVerson, releaseInfo) {
+                            update_dialog.newVerson = newVerson;
+                            update_dialog.releaseInfo = releaseInfo;
+                            update_dialog.open();
+                        }
+                    }
+
+                    function checkForUpdates() {
+                        console.debug("start check update...");
+                        var url = ApplicationInfo.updateCheckUrl;
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("GET", url, true);
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState === XMLHttpRequest.DONE) {
+                                if (xhr.status === 200) {
+                                    // 200 OK: 请求成功，服务器返回了请求的数据
+                                    var data = JSON.parse(xhr.responseText);
+                                    var latestReleaseVersionName = data.tag_name;
+                                    var latestReleaseInfo = data.body;
+                                    if (latestReleaseVersionName !== ApplicationInfo.versionName) {
+                                        update_dialog.show(latestReleaseVersionName, latestReleaseInfo);
+                                    } else {
+                                        showInfo(qsTr("The application is up to date."));
+                                    }
+                                    check_for_update_button.enabled = false;
+                                    check_for_update_success_icon.visible = true;
+                                    check_for_update_progress_ring.visible = false;
+                                } else {
+                                    showError(qsTr("Failed to connect to server. Check your network connection and try again."));
+                                    console.debug("Check update error: " + xhr.status);
+                                    check_for_update_button.enabled = true;
+                                    check_for_update_progress_ring.visible = false;
+                                }
+                            }
+                        };
+                        xhr.send();
                     }
                 }
             }
@@ -507,7 +548,7 @@ FluScrollablePage {
                         text: qsTr("Check out this project on GitHub")
                         font.pixelSize: 12
                         onClicked: {
-                            Qt.openUrlExternally("https://github.com/lucky9loogn/BleHelper");
+                            Qt.openUrlExternally(ApplicationInfo.repositoryUrl);
                         }
                     }
 

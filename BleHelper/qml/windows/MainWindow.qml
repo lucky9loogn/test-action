@@ -1,9 +1,11 @@
+import Qt.labs.platform
+import QtQml
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Window
-import QtQml
-import Qt.labs.platform
+
+import BleHelper
 import FluentUI
 
 import "../controls"
@@ -66,13 +68,6 @@ FluWindow {
 
     Component.onDestruction: {
         FluRouter.exit();
-    }
-
-    FluEvent {
-        name: "checkForUpdates"
-        onTriggered: {
-            checkForUpdates(false);
-        }
     }
 
     SystemTrayIcon {
@@ -236,17 +231,21 @@ FluWindow {
             }
 
             Component.onCompleted: {
-                var idx = 0;
-                var url = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=" + idx + "&n=1&mkt=zh-CN";
-                window.sendRequest(url, function (response) {
-                    if (response.status === 200 && response.content && response.content !== "") {
-                        var data = JSON.parse(response.content);
-                        if (data.images && data.images.length > 0) {
-                            var imageUrl = "https://www.bing.com" + data.images[0].url;
-                            background_image.source = imageUrl;
+                var url = "https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN";
+                var xhr = new XMLHttpRequest();
+                xhr.open("GET", url, true);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200 && xhr.responseText !== "") {
+                            var data = JSON.parse(xhr.responseText);
+                            if (data && data.images && data.images.length > 0) {
+                                var imageUrl = "https://www.bing.com" + data.images[0].url;
+                                background_image.source = imageUrl;
+                            }
                         }
                     }
-                });
+                };
+                xhr.send();
             }
 
             Component.onDestruction: {
@@ -457,69 +456,5 @@ FluWindow {
             });
             return data;
         }
-    }
-
-    FluContentDialog {
-        id: update_dialog
-        property string newVerson
-        property string body
-        title: qsTr("Software Update")
-        message: qsTr("There is a new update available: ") + qsTr("BLE Helper") + " " + newVerson + "\n\n" + body
-        buttonFlags: FluContentDialogType.NegativeButton | FluContentDialogType.PositiveButton
-        negativeText: qsTr("Cancel")
-        positiveText: qsTr("Update Now")
-        onPositiveClicked: {
-            Qt.openUrlExternally("https://github.com/lucky9loogn/BleHelper/releases/latest");
-        }
-    }
-
-    function checkForUpdates(silent) {
-        console.debug("start check update...");
-        var url = "https://api.github.com/repos/lucky9loogn/BleHelper/releases/latest";
-        window.sendRequest(url, function (response) {
-            if (response.status === 200) {
-                // 200 OK: 请求成功，服务器返回了请求的数据
-                var data = JSON.parse(response.content);
-                var latestReleaseVersionName = data.tag_name;
-                var latestReleaseInfo = data.body;
-                if (latestReleaseVersionName !== ApplicationInfo.versionName) {
-                    update_dialog.newVerson = latestReleaseVersionName;
-                    update_dialog.body = latestReleaseInfo;
-                    update_dialog.open();
-                } else {
-                    if (!silent) {
-                        showInfo(qsTr("The application is up to date."));
-                    }
-                }
-                FluEventBus.post("checkUpdateFinish", {
-                    "status": "success"
-                });
-            } else {
-                if (!silent) {
-                    showError(qsTr("Failed to connect to server. Check your network connection and try again."));
-                }
-                console.debug("Check update error: " + response.status);
-                FluEventBus.post("checkUpdateFinish", {
-                    "status": "failed"
-                });
-            }
-        });
-    }
-
-    function sendRequest(url, callback) {
-        let request = new XMLHttpRequest();
-        request.onreadystatechange = function () {
-            if (request.readyState === XMLHttpRequest.DONE) {
-                let response = {
-                    "status": request.status,
-                    "headers": request.getAllResponseHeaders(),
-                    "contentType": request.responseType,
-                    "content": request.response
-                };
-                callback(response);
-            }
-        };
-        request.open("GET", url);
-        request.send();
     }
 }

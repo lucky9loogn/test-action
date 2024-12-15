@@ -12,6 +12,10 @@
 #include "ApplicationInfo.h"
 #include "SettingsManager.h"
 
+#define MODULE_URI "BleHelper"
+#define MODULE_VERSION_MAJOR 1
+#define MODULE_VERSION_MINOR 0
+
 #ifdef WIN32
 #  include <windows.h>
 // 程序崩溃回调函数
@@ -38,8 +42,22 @@ int main(int argc, char *argv[])
     QQmlApplicationEngine engine;
 
     SettingsManager::getInstance()->initTranslator(&engine);
-    engine.rootContext()->setContextProperty("ApplicationInfo", ApplicationInfo::getInstance());
-    engine.rootContext()->setContextProperty("SettingsManager", SettingsManager::getInstance());
+
+    qmlRegisterSingletonType<ApplicationInfo>(
+            MODULE_URI, MODULE_VERSION_MAJOR, MODULE_VERSION_MINOR, "ApplicationInfo",
+            [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject * {
+                Q_UNUSED(engine)
+                Q_UNUSED(scriptEngine)
+                return ApplicationInfo::getInstance();
+            });
+
+    qmlRegisterSingletonType<SettingsManager>(
+            MODULE_URI, MODULE_VERSION_MAJOR, MODULE_VERSION_MINOR, "SettingsManager",
+            [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject * {
+                Q_UNUSED(engine)
+                Q_UNUSED(scriptEngine)
+                return SettingsManager::getInstance();
+            });
 
     const QUrl url(QStringLiteral("qrc:/qml/main.qml"));
     QObject::connect(
