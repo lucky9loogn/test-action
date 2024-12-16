@@ -12,7 +12,19 @@ Text {
         DescendingSort,
         AscendingSort,
         Pair,
-        Unpair
+        Unpair,
+        DeviceName,
+        DeviceAddress,
+        DeviceRssi,
+        State,
+        Client,
+        Server,
+        Read,
+        Write,
+        Notify,
+        Indicate,
+        Favorite,
+        Unfavorite
     }
 
     property int iconSource

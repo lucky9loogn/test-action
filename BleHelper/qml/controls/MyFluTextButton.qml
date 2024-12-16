@@ -6,6 +6,7 @@ import FluentUI
 
 Button {
     id: control
+    property bool clickable: true
     property bool disabled: false
     property string contentDescription: ""
     property color normalColor: FluTheme.primaryColor
@@ -18,7 +19,7 @@ Button {
     property color backgroundDisableColor: FluTheme.itemNormalColor
     property bool textBold: true
     property color textColor: {
-        if (!enabled) {
+        if (disabled) {
             return disableColor;
         }
         if (pressed) {
@@ -28,7 +29,7 @@ Button {
     }
     verticalPadding: 6
     horizontalPadding: 6
-    enabled: !disabled
+    enabled: !disabled && clickable
     font: FluTextStyle.Body
     background: Rectangle {
         radius: 4

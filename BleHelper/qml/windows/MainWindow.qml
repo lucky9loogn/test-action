@@ -329,26 +329,26 @@ FluWindow {
                 pageMode: FluNavigationViewType.NoStack
                 items: FluObject {
                     FluPaneItem {
-                        title: qsTr("Scanner")
+                        title: qsTr("Bluetooth Client")
                         menuDelegate: nav_item_right_button_menu_component
                         iconDelegate: MyFluIcon {
-                            iconSize: 12
-                            iconSource: MyFluIcon.Icon.Scan
+                            iconSize: 15
+                            iconSource: MyFluIcon.Client
                         }
-                        url: "qrc:/qml/pages/ScannerPage.qml"
+                        url: "qrc:/qml/pages/ClientPage.qml"
                         onTap: {
                             nav_view.push(url);
                         }
                     }
 
                     FluPaneItem {
-                        title: qsTr("Details")
+                        title: qsTr("Manage Favorites")
                         menuDelegate: nav_item_right_button_menu_component
-                        iconDelegate: MyFluIcon {
-                            iconSize: 12
-                            iconSource: MyFluIcon.Icon.Details
+                        iconDelegate: FluIcon {
+                            iconSize: 15
+                            iconSource: FluentIcons.FavoriteStar
                         }
-                        url: "qrc:/qml/pages/DetailsPage.qml"
+                        url: "qrc:/qml/pages/ManageFavoritesPage.qml"
                         onTap: {
                             nav_view.push(url);
                         }
@@ -360,7 +360,7 @@ FluWindow {
                     FluPaneItem {
                         title: qsTr("Settings")
                         iconDelegate: FluIcon {
-                            iconSize: 12
+                            iconSize: 15
                             iconSource: FluentIcons.Settings
                         }
                         url: "qrc:/qml/pages/SettingsPage.qml"
@@ -395,40 +395,12 @@ FluWindow {
                         clickCount = 0;
                     }
                 }
-                autoSuggestBox: FluAutoSuggestBox {
-                    iconSource: FluentIcons.Search
-                    items: nav_view.getSearchData()
-                    placeholderText: qsTr("Search")
-                    onItemClicked: data => {
-                        nav_view.startPageByItem(data);
-                    }
-                }
+
                 Component.onCompleted: {
                     window.setHitTestVisible(nav_view.buttonMenu);
                     window.setHitTestVisible(nav_view.buttonBack);
                     window.setHitTestVisible(nav_view.imageLogo);
                     setCurrentIndex(0);
-                }
-
-                function getSearchData() {
-                    var arr = [];
-                    var items = nav_view.getItems();
-                    for (var i = 0; i < items.length; i++) {
-                        var item = items[i];
-                        if (item instanceof FluPaneItem) {
-                            if (item.parent instanceof FluPaneItemExpander) {
-                                arr.push({
-                                    "title": `${item.parent.title} -> ${item.title}`,
-                                    "key": item.key
-                                });
-                            } else
-                                arr.push({
-                                    "title": item.title,
-                                    "key": item.key
-                                });
-                        }
-                    }
-                    return arr;
                 }
             }
         }

@@ -2,6 +2,100 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
+    <name>ClientPage</name>
+    <message>
+        <location filename="../../qml/pages/ClientPage.qml" line="23"/>
+        <source>Pairing error!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ClientPage.qml" line="25"/>
+        <source>The attempt to connect to the remote device failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ClientPage.qml" line="27"/>
+        <source>The remote device closed the connection.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ClientPage.qml" line="29"/>
+        <source>Sorry, an unknown error occurred.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ClientPage.qml" line="94"/>
+        <source>Unknown error.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ClientPage.qml" line="93"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ClientPage.qml" line="16"/>
+        <source>Bluetooth Client</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ClientPage.qml" line="95"/>
+        <source>Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ConnectionPage</name>
+    <message>
+        <location filename="../../qml/pages/ConnectionPage.qml" line="14"/>
+        <source>Connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ConnectionPage.qml" line="62"/>
+        <location filename="../../qml/pages/ConnectionPage.qml" line="64"/>
+        <source>Disconnect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ConnectionPage.qml" line="248"/>
+        <location filename="../../qml/pages/ConnectionPage.qml" line="326"/>
+        <source>Read</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ConnectionPage.qml" line="262"/>
+        <source>Write</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ConnectionPage.qml" line="234"/>
+        <source>Notify</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ConnectionPage.qml" line="77"/>
+        <source>Services &amp; Characteristics &amp; Descriptors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ConnectionPage.qml" line="220"/>
+        <source>Indicate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ConnectionPage.qml" line="272"/>
+        <location filename="../../qml/pages/ConnectionPage.qml" line="335"/>
+        <source>UUID: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ConnectionPage.qml" line="277"/>
+        <source>Properties: </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CrashWindow</name>
     <message>
         <location filename="../../qml/windows/CrashWindow.qml" line="11"/>
@@ -21,15 +115,6 @@
     <message>
         <location filename="../../qml/windows/CrashWindow.qml" line="69"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>DetailsPage</name>
-    <message>
-        <location filename="../../qml/pages/DetailsPage.qml" line="17"/>
-        <location filename="../../qml/pages/DetailsPage.qml" line="32"/>
-        <source>Details</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -117,12 +202,12 @@
     </message>
     <message>
         <location filename="../../qml/windows/MainWindow.qml" line="332"/>
-        <source>Scanner</source>
+        <source>Bluetooth Client</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../qml/windows/MainWindow.qml" line="345"/>
-        <source>Details</source>
+        <source>Manage Favorites</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -136,33 +221,76 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/windows/MainWindow.qml" line="401"/>
-        <source>Search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../qml/windows/MainWindow.qml" line="447"/>
+        <location filename="../../qml/windows/MainWindow.qml" line="419"/>
         <source>Finish</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/windows/MainWindow.qml" line="448"/>
+        <location filename="../../qml/windows/MainWindow.qml" line="420"/>
         <source>Next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/windows/MainWindow.qml" line="449"/>
+        <location filename="../../qml/windows/MainWindow.qml" line="421"/>
         <source>Back</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/windows/MainWindow.qml" line="453"/>
+        <location filename="../../qml/windows/MainWindow.qml" line="425"/>
         <source>Hide Easter eggs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/windows/MainWindow.qml" line="454"/>
+        <location filename="../../qml/windows/MainWindow.qml" line="426"/>
         <source>Try a few more clicks!</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>ManageFavoritesPage</name>
+    <message>
+        <location filename="../../qml/pages/ManageFavoritesPage.qml" line="18"/>
+        <source>Manage Favorites</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ManageFavoritesPage.qml" line="36"/>
+        <source>More Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ManageFavoritesPage.qml" line="50"/>
+        <source>Unfavorite All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ManageFavoritesPage.qml" line="59"/>
+        <source>Tip</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ManageFavoritesPage.qml" line="60"/>
+        <source>Are you sure to remove all devices from the favorites?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ManageFavoritesPage.qml" line="61"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ManageFavoritesPage.qml" line="63"/>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ManageFavoritesPage.qml" line="74"/>
+        <source>No favorite devices found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ManageFavoritesPage.qml" line="144"/>
+        <source>Unfavorite</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -232,9 +360,204 @@
 <context>
     <name>ScannerPage</name>
     <message>
-        <location filename="../../qml/pages/ScannerPage.qml" line="17"/>
-        <location filename="../../qml/pages/ScannerPage.qml" line="32"/>
+        <location filename="../../qml/pages/ScannerPage.qml" line="14"/>
         <source>Scanner</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="21"/>
+        <source>Successfully paired with &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="23"/>
+        <source>Successfully unpaired with &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="52"/>
+        <source>Tip</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="53"/>
+        <source>This application cannot be used without Bluetooth. Please switch Bluetooth ON to continue.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="55"/>
+        <source>Turn on Bluetooth</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="56"/>
+        <location filename="../../qml/pages/ScannerPage.qml" line="69"/>
+        <location filename="../../qml/pages/ScannerPage.qml" line="334"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="67"/>
+        <source>Connecting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="68"/>
+        <source>Connecting to &quot;%1&quot;...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="101"/>
+        <source>Unfavorite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="101"/>
+        <source>Favorite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="110"/>
+        <source>&quot;%1&quot; has been deleted from the favorites.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="113"/>
+        <source>&quot;%1&quot; has been inserted to the favorites.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="119"/>
+        <source>Unpair</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="119"/>
+        <source>Pair</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="176"/>
+        <location filename="../../qml/pages/ScannerPage.qml" line="512"/>
+        <source>Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="185"/>
+        <source>Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="228"/>
+        <source>Filter by name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="242"/>
+        <source>Filter by address</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="276"/>
+        <source>≥</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="284"/>
+        <source>dBm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="299"/>
+        <source>Favorites</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="307"/>
+        <location filename="../../qml/pages/ScannerPage.qml" line="657"/>
+        <source>Connected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="315"/>
+        <location filename="../../qml/pages/ScannerPage.qml" line="671"/>
+        <source>Paired</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="342"/>
+        <source>Apply</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="388"/>
+        <source>Bluetooth</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="408"/>
+        <source>On</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="408"/>
+        <source>Off</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="444"/>
+        <source>Find devices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="466"/>
+        <source>Stop Scanning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="468"/>
+        <source>Start Scanning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="498"/>
+        <source>Devices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="524"/>
+        <source>Sort by RSSI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="528"/>
+        <source>Sort by RSSI in descending order.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="630"/>
+        <source> dBm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="643"/>
+        <source>Favorited</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="688"/>
+        <location filename="../../qml/pages/ScannerPage.qml" line="692"/>
+        <source>Disconnect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="688"/>
+        <source>Connect</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/ScannerPage.qml" line="703"/>
+        <source>More Options</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -356,67 +679,107 @@
     </message>
     <message>
         <location filename="../../qml/pages/SettingsPage.qml" line="384"/>
+        <source>Bluetooth</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/SettingsPage.qml" line="396"/>
+        <source>Scan Timeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/SettingsPage.qml" line="420"/>
+        <source>15 Seconds</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/SettingsPage.qml" line="424"/>
+        <source>1 Minute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/SettingsPage.qml" line="428"/>
+        <source>2 Minutes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/SettingsPage.qml" line="432"/>
+        <source>5 Minutes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/SettingsPage.qml" line="436"/>
+        <source>10 Minutes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/SettingsPage.qml" line="440"/>
+        <source>No Timeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../qml/pages/SettingsPage.qml" line="449"/>
         <source>About</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="412"/>
-        <location filename="../../qml/pages/SettingsPage.qml" line="469"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="477"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="534"/>
         <source>BLE Helper</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="450"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="515"/>
         <source>Check for Updates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="468"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="533"/>
         <source>Software Update</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="469"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="534"/>
         <source>There is a new update available: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="471"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="536"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="472"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="537"/>
         <source>Update Now</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="499"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="564"/>
         <source>The application is up to date.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="505"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="570"/>
         <source>Failed to connect to server. Check your network connection and try again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="528"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="593"/>
         <source>Author: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="535"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="600"/>
         <source>Built on: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="548"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="613"/>
         <source>Check out this project on GitHub</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../qml/pages/SettingsPage.qml" line="564"/>
+        <location filename="../../qml/pages/SettingsPage.qml" line="629"/>
         <source>Dependencies &amp; References</source>
         <translation type="unfinished"></translation>
     </message>
