@@ -6,12 +6,20 @@ import QtQuick.Window
 import BleHelper
 import FluentUI
 
+import "../components"
 import "../controls"
 
 FluPage {
     id: page
     padding: 0
     title: qsTr("Connection")
+
+    RenameAttributePopup {
+        id: attribute_rename_popup
+        onSaveButtonClicked: function (attributeUuid, newName, attributeType, attributeInfo) {
+            ClientManager.renameAttribute(attributeInfo, newName);
+        }
+    }
 
     FluFrame {
         id: connected_device_info_container
@@ -108,7 +116,7 @@ FluPage {
                 property string uuid: info ? info.uuid : ""
                 property string name: info ? info.name : ""
                 property string type: info ? info.type : ""
-                property bool canRename: info ? info.canRename : false
+                property bool canRename: info ? info.canRename && ClientManager.isUuidNameMappingEnabled : false
 
                 anchors {
                     fill: parent
@@ -133,8 +141,7 @@ FluPage {
                                 text: service_item.name
                                 clickable: service_item.canRename
                                 onClicked: {
-                                    // TODO
-                                    console.log("Rename Service: " + service_item.uuid);
+                                    attribute_rename_popup.showWithInfo(this, service_item.info);
                                 }
                             }
 
@@ -184,7 +191,7 @@ FluPage {
                                 property bool canWrite: info ? info.canWrite : false
                                 property bool canWriteNoResponse: info ? info.canWriteNoResponse : false
                                 property string properties: info ? info.properties : ""
-                                property bool canRename: info ? info.canRename : false
+                                property bool canRename: info ? info.canRename && ClientManager.isUuidNameMappingEnabled : false
 
                                 Layout.fillWidth: true
                                 spacing: 0
@@ -202,8 +209,7 @@ FluPage {
                                         textColor: FluTheme.fontPrimaryColor
                                         clickable: characteristic_item.canRename
                                         onClicked: {
-                                            // TODO
-                                            console.log("Rename Characteristic: " + characteristic_item.uuid);
+                                            attribute_rename_popup.showWithInfo(this, characteristic_item.info);
                                         }
                                     }
 
