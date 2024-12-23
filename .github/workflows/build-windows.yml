@@ -62,16 +62,46 @@ jobs:
       #     cmake --build . --target all --config Release --parallel
       #     cmake --build . --target Script-DeployRelease
            
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.targetName }}
-          path: dist
+      - name: Download Qt6Bluetooth.dll from release
+        run: |
+          # 设置目标仓库和 Release 标签
+          $owner = "lucky9loogn"
+          $repo = "build-qtconnectivity"
+          $tag = "v6.8.1-fixed"  # 目标 Release 标签
 
-      - name: Download Qt6Bluetooth.dll from another repository
-        uses: actions/download-artifact@v3
-        with:
-          repository: "lucky9loogn/build-qtconnectivity"
-          artifact-name: "Qt6Bluetooth-dll"
+          # 使用 GitHub API 获取该 Release 的资产信息
+          $assetUrl = Invoke-RestMethod -Uri "https://api.github.com/repos/$owner/$repo/releases/tags/$tag" | 
+            Where-Object { $_.assets.name -eq "Qt6Bluetooth.dll" } |
+            Select-Object -ExpandProperty assets |
+            Select-Object -ExpandProperty browser_download_url
+
+          # 检查是否找到了资源链接
+          if (-not $assetUrl) {
+            Write-Error "Asset Qt6Bluetooth.dll not found!"
+            exit 1
+          }
+
+          # 下载文件
+          Write-Host "Downloading Qt6Bluetooth.dll..."
+          Invoke-WebRequest -Uri $assetUrl -OutFile "Qt6Bluetooth.dll"
+
+      - name: Move Qt6Bluetooth.dll to dist directory (overwrite)
+        run: |
+          # 创建 dist 目录（如果它不存在）
+          New-Item -Path "dist" -ItemType Directory -Force
+
+          # 复制文件到 dist 目录并强制覆盖
+          Copy-Item -Path "Qt6Bluetooth.dll" -Destination "dist\Qt6Bluetooth.dll" -Force
+
+      - name: Verify file download and copy
+        run: |
+          # 检查文件是否存在
+          if (Test-Path "dist\Qt6Bluetooth.dll") {
+            Write-Host "Qt6Bluetooth.dll copied successfully to dist directory!"
+          } else {
+            Write-Error "Download or copy failed!"
+            exit 1
+          }
 
       # - name: inno setup install
       #   # if: startsWith(github.event.ref, 'refs/tags/')
