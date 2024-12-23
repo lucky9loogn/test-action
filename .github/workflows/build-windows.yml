@@ -67,13 +67,53 @@ jobs:
           name: ${{ env.targetName }}
           path: dist
 
+      - name: Download Qt6Bluetooth.dll from release
+        run: |
+          # 设置仓库信息和版本
+          OWNER="lucky9loogn"
+          REPO="build-qtconnectivity"
+          TAG="v6.8.1-fixed"  # 目标 Release 标签
+
+          # 使用 GitHub API 获取该 Release 的所有资产信息
+          ASSET_URL=$(curl -s "https://api.github.com/repos/$OWNER/$REPO/releases/tags/$TAG" \
+            | jq -r '.assets[] | select(.name == "Qt6Bluetooth.dll") | .browser_download_url')
+
+          # 检查是否找到了资产
+          if [ -z "$ASSET_URL" ]; then
+            echo "Asset Qt6Bluetooth.dll not found!"
+            exit 1
+          fi
+
+          # 下载文件
+          echo "Downloading Qt6Bluetooth.dll..."
+          curl -L -o "Qt6Bluetooth.dll" "$ASSET_URL"
+          
+      - name: Copy Qt6Bluetooth.dll to dist directory (overwrite)
+        run: |
+          # 确保 dist 目录存在
+          mkdir -p dist
+
+          # 将 Qt6Bluetooth.dll 文件复制到 dist 目录并强制覆盖
+          cp -f Qt6Bluetooth.dll dist/Qt6Bluetooth.dll
+
+      - name: Verify copy
+        run: |
+          # 验证文件是否复制成功
+          if [ -f "dist/Qt6Bluetooth.dll" ]; then
+            echo "Qt6Bluetooth.dll copied successfully to dist directory!"
+          else
+            echo "Copy failed!"
+            exit 1
+          fi
+
       - name: inno setup install
-        if: startsWith(github.event.ref, 'refs/tags/')
+        # if: startsWith(github.event.ref, 'refs/tags/')
         uses: zhuzichu520/inno-setup-action@v1.0.1
         with:
           filepath: ./package/InstallerScript.iss
 
       - name: Upload release
+        # if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
