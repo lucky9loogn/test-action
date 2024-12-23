@@ -885,7 +885,7 @@ void ClientManager::serviceScanFinished()
         connect(srv, &QLowEnergyService::descriptorWritten, this,
                 &ClientManager::descriptorWritten);
 
-        srv->discoverDetails(QLowEnergyService::SkipValueDiscovery);
+        srv->discoverDetails(QLowEnergyService::FullDiscovery);
     }
 }
 
