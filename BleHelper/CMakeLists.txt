@@ -178,12 +178,10 @@ if(CMAKE_BUILD_TYPE MATCHES "Release")
       COMMAND
         ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.exe
         ${CMAKE_SOURCE_DIR}/dist
-      COMMAND
-        if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.exe.manifest)
-            ${CMAKE_COMMAND} -E copy
-            ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.exe.manifest
-            ${CMAKE_SOURCE_DIR}/dist
-        endif()
+      # COMMAND
+      #   ${CMAKE_COMMAND} -E copy
+      #   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.exe.manifest
+      #   ${CMAKE_SOURCE_DIR}/dist
       COMMAND
         ${QT_DEPLOY_QT} --qmldir=${CMAKE_CURRENT_LIST_DIR} --plugindir
         ${CMAKE_SOURCE_DIR}/dist/plugins --no-translations --compiler-runtime
@@ -192,13 +190,4 @@ if(CMAKE_BUILD_TYPE MATCHES "Release")
       SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
   endif()
-
-
-    add_custom_target(
-      Script-DeployRelease
-      COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_SOURCE_DIR}/dist
-
-      SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
-      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-
 endif()
