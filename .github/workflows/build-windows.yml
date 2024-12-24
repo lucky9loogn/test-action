@@ -6,6 +6,11 @@ on:
   push:
     branches:
       - main
+    tags:
+      - '*'
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -96,19 +101,20 @@ jobs:
             exit 1
           }
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ env.fileName }}_${{ matrix.qt_arch }}_Qt${{ matrix.qt_ver }}
           path: dist
 
       - name: Compile .iss to .exe installer
-        # if: startsWith(github.event.ref, 'refs/tags/')
+        if: startsWith(github.event.ref, 'refs/tags/')
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.5
         with:
           path: package/InstallerScript.iss
 
       - name: Upload release
-        # if: startsWith(github.event.ref, 'refs/tags/')
+        if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
