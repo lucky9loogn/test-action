@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.20)
 
 project(
   BleHelper
-  VERSION ${MAJOR_VERSION}.${MINOR_VERSION}
   DESCRIPTION "BLE Helper"
   LANGUAGES CXX)
 
@@ -178,12 +177,6 @@ if(CMAKE_BUILD_TYPE MATCHES "Release")
       COMMAND
         ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.exe
         ${CMAKE_SOURCE_DIR}/dist
-      if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.exe.manifest")
-        COMMAND
-          ${CMAKE_COMMAND} -E copy
-          ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.exe.manifest
-          ${CMAKE_SOURCE_DIR}/dist
-      endif()
       COMMAND
         ${QT_DEPLOY_QT} --qmldir=${CMAKE_CURRENT_LIST_DIR} --plugindir
         ${CMAKE_SOURCE_DIR}/dist/plugins --no-translations --compiler-runtime

@@ -71,15 +71,15 @@ jobs:
         run: |
           mkdir -p ./dist/
           mkdir -p ./package/usr/bin/
-          cp ./BleHelper/resources/images/icons/logo.svg ./dist/${targetName}.svg
-          cp ./build/BleHelper/BleHelper ./dist/${targetName}
+          cp ./BleHelper/resources/images/icons/logo.svg ./dist/${{ env.targetName }}.svg
+          cp ./build/BleHelper/BleHelper ./dist/${{ env.targetName }}
           cp -r ./build/BleHelper/i18n ./package/usr/bin/i18n/
 
       - name: Package
         run: |
           # make sure Qt plugin finds QML sources so it can deploy the imported files
           export QML_SOURCES_PATHS=./
-          linuxdeploy-x86_64.AppImage --plugin=qt --output=appimage --create-desktop-file --icon-file=./dist/${targetName}.svg --executable=./dist/${targetName} --appdir ./package/
+          linuxdeploy-x86_64.AppImage --plugin=qt --output=appimage --create-desktop-file --icon-file=./dist/${{ env.targetName }}.svg --executable=./dist/${{ env.targetName }} --appdir ./package/
           mv ${{ env.targetName }}-*.AppImage ${{ env.targetName }}.AppImage
 
       - name: Upload artifact
