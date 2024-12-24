@@ -47,7 +47,7 @@ jobs:
           arch: ${{ matrix.qt_arch }}
           cache: 'true'
           cache-key-prefix: 'install-qt-action'
-          modules: 'qtshadertools qt5compat qtconnectivity'
+          modules: 'qt5compat qtconnectivity' #qtshadertools
 
       - name: Install dependencies
         run: |
