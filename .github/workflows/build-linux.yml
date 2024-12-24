@@ -47,7 +47,7 @@ jobs:
           arch: ${{ matrix.qt_arch }}
           cache: 'true'
           cache-key-prefix: 'install-qt-action'
-          modules: 'qt5compat qtconnectivity' #qtshadertools
+          modules: 'qtshadertools qt5compat qtconnectivity'
 
       - name: Install dependencies
         run: |
@@ -70,30 +70,30 @@ jobs:
       - name: Copy files
         run: |
           mkdir -p ./dist/
-          mkdir -p ./package/usr/bin/
+          mkdir -p ./dist/usr/bin/
           cp ./BleHelper/resources/images/icons/logo.svg ./dist/${{ env.targetName }}.svg
           cp ./build/BleHelper/BleHelper ./dist/${{ env.targetName }}
-          cp -r ./build/BleHelper/i18n ./package/usr/bin/i18n/
+          cp -r ./build/BleHelper/i18n ./dist/usr/bin/i18n/
 
       - name: Package
         run: |
           # make sure Qt plugin finds QML sources so it can deploy the imported files
           export QML_SOURCES_PATHS=./
-          linuxdeploy-x86_64.AppImage --plugin=qt --output=appimage --create-desktop-file --icon-file=./dist/${{ env.targetName }}.svg --executable=./dist/${{ env.targetName }} --appdir ./package/
-          mv ${{ env.targetName }}-*.AppImage ${{ env.targetName }}.AppImage
+          linuxdeploy-x86_64.AppImage --plugin=qt --output=appimage --create-desktop-file --icon-file=./dist/${{ env.targetName }}.svg --executable=./dist/${{ env.targetName }} --appdir ./dist/
+          mv ${{ env.targetName }}-*.AppImage ./package/${{ env.targetName }}.AppImage
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.targetName }}_${{ matrix.qt_arch }}_Qt${{ matrix.qt_ver }}
-          path: ${{ env.targetName }}.AppImage
+          path: ./package/${{ env.targetName }}.AppImage
 
       - name: Upload release
         if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.targetName }}.AppImage
+          file: ./package/${{ env.targetName }}.AppImage
           asset_name: ${{ env.targetName }}_${{  github.ref_name }}_${{ matrix.qt_arch }}_Qt${{ matrix.qt_ver }}.AppImage
           tag: ${{ github.ref }}
           overwrite: true
