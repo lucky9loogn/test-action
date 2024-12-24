@@ -1,6 +1,6 @@
 # reference: https://github.com/zhuzichu520/FluentUI/blob/main/.github/workflows/windows.yml
 
-name: Windows
+name: Build the project on windows and release
 
 on:
   push:
@@ -10,7 +10,6 @@ on:
 jobs:
   build:
     name: Build and release
-    runs-on: ${{ matrix.os }}
     permissions:
       contents: write
     strategy:
@@ -22,12 +21,15 @@ jobs:
             msvc_arch: x64
             qt_arch_install: msvc2022_64  
 
+    runs-on: ${{ matrix.os }}
+
     env:
       targetName: BleHelper.exe
+      fileName: BleHelper
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
           
@@ -37,84 +39,80 @@ jobs:
           version: 1.10.2
           
       - name: Cache Qt
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/qt
           key: qt-${{ matrix.qt_ver }}-${{ matrix.qt_arch }}
           
       - name: Install Qt
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
           version: ${{ matrix.qt_ver }}
           arch: ${{ matrix.qt_arch }}
           cache: ${{steps.cache-qt.outputs.cache-hit}}
-          modules: 'qt5compat qtmultimedia qtshadertools qtimageformats qtspeech qt3d qtconnectivity'
+          modules: 'qtshadertools qt5compat qtconnectivity'
           
-      - name: Build
-        id: build
+      - name: Build and package the project
         shell: cmd
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" ${{ matrix.msvc_arch }}
-          ninja --version
           mkdir build
           cd build
           cmake -DCMAKE_PREFIX_PATH=${{steps.cache-qt.outputs.cache-hit}}\${{ matrix.qt_ver }}\${{ matrix.qt_arch_install }} -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl -DCMAKE_BUILD_TYPE=Release -GNinja ..
           cmake --build . --target all --config Release --parallel
           cmake --build . --target Script-DeployRelease
-           
-      - name: Download Qt6Bluetooth.dll from release
+
+      - name: Patch
+        shell: pwsh
         run: |
-          # 设置目标仓库和 Release 标签
           $owner = "lucky9loogn"
           $repo = "build-qtconnectivity"
-          $tag = "v6.8.1-fixed"  # 目标 Release 标签
+          $tag = "v6.8.1-fixed"
+          $assetName = "Qt6Bluetooth.dll"
+          $downloadPath = "dist/$assetName"
 
-          # 使用 GitHub API 获取该 Release 的资产信息
           $assetUrl = Invoke-RestMethod -Uri "https://api.github.com/repos/$owner/$repo/releases/tags/$tag" | 
-            Where-Object { $_.assets.name -eq "Qt6Bluetooth.dll" } |
+            Where-Object { $_.assets.name -eq $assetName } |
             Select-Object -ExpandProperty assets |
             Select-Object -ExpandProperty browser_download_url
 
-          # 检查是否找到了资源链接
           if (-not $assetUrl) {
-            Write-Error "Asset Qt6Bluetooth.dll not found!"
+            Write-Error "Asset $assetName not found!"
             exit 1
           }
 
-          # 下载文件
-          Write-Host "Downloading Qt6Bluetooth.dll..."
-          Invoke-WebRequest -Uri $assetUrl -OutFile "Qt6Bluetooth.dll"
+          if (Test-Path $downloadPath) {
+              Write-Host "$assetName already exists in $downloadDir. Deleting the old file..."
+              Remove-Item $downloadPath -Force
+          }
 
-      - name: Move Qt6Bluetooth.dll to dist directory (overwrite)
-        run: |
-          # 创建 dist 目录（如果它不存在）
-          New-Item -Path "dist" -ItemType Directory -Force
+          Write-Host "Downloading $assetName..."
+          Invoke-WebRequest -Uri $assetUrl -OutFile $downloadPath -Force
 
-          # 复制文件到 dist 目录并强制覆盖
-          Copy-Item -Path "Qt6Bluetooth.dll" -Destination "dist\Qt6Bluetooth.dll" -Force
-
-      - name: Verify file download and copy
-        run: |
-          # 检查文件是否存在
-          if (Test-Path "dist\Qt6Bluetooth.dll") {
-            Write-Host "Qt6Bluetooth.dll copied successfully to dist directory!"
+          if (Test-Path $downloadPath) {
+            Write-Host "$assetName downloaded successfully to $downloadPath!"
           } else {
-            Write-Error "Download or copy failed!"
+            Write-Error "Download $assetName to $downloadPath failed!"
             exit 1
           }
 
-      - name: inno setup install
-        # if: startsWith(github.event.ref, 'refs/tags/')
-        uses: zhuzichu520/inno-setup-action@v1.0.1
+      - uses: actions/upload-artifact@v4
         with:
-          filepath: ./package/InstallerScript.iss
+          name: ${{ env.fileName }}_${{ matrix.qt_arch }}_Qt${{ matrix.qt_ver }}
+          path: dist
+
+      - name: Compile .iss to .exe installer
+        # if: startsWith(github.event.ref, 'refs/tags/')
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.5
+        with:
+          path: package/InstallerScript.iss
 
       - name: Upload release
         # if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ./package/installer.exe
+          file: package/installer.exe
           asset_name: ${{ env.fileName }}_${{ github.ref_name }}_${{ matrix.qt_arch }}_Qt${{ matrix.qt_ver }}.exe
           tag: ${{ github.ref }}
           overwrite: true 
