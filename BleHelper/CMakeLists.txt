@@ -178,10 +178,12 @@ if(CMAKE_BUILD_TYPE MATCHES "Release")
       COMMAND
         ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.exe
         ${CMAKE_SOURCE_DIR}/dist
-      # COMMAND
-      #   ${CMAKE_COMMAND} -E copy
-      #   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.exe.manifest
-      #   ${CMAKE_SOURCE_DIR}/dist
+      if(EXISTS "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.exe.manifest")
+        COMMAND
+          ${CMAKE_COMMAND} -E copy
+          ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.exe.manifest
+          ${CMAKE_SOURCE_DIR}/dist
+      endif()
       COMMAND
         ${QT_DEPLOY_QT} --qmldir=${CMAKE_CURRENT_LIST_DIR} --plugindir
         ${CMAKE_SOURCE_DIR}/dist/plugins --no-translations --compiler-runtime
@@ -190,4 +192,75 @@ if(CMAKE_BUILD_TYPE MATCHES "Release")
       SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
   endif()
+
+# if(NOT EXISTS "${CMAKE_SOURCE_DIR}/dist/linuxdeploy-x86_64.AppImage")
+# file(DOWNLOAD
+# "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
+# "${CMAKE_SOURCE_DIR}/dist/linuxdeploy-x86_64.AppImage" SHOW_PROGRESS)
+# endif()
+
+# if(NOT EXISTS "${CMAKE_SOURCE_DIR}/dist/linuxdeploy-plugin-qt-x86_64.AppImage")
+# file(DOWNLOAD "https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage"
+# "${CMAKE_SOURCE_DIR}/dist/linuxdeploy-plugin-qt-x86_64.AppImage"
+# SHOW_PROGRESS)
+# endif()
+
+# if(NOT EXISTS "${CMAKE_SOURCE_DIR}/dist/linuxdeploy-plugin-appimage-x86_64.AppImage")
+# file(DOWNLOAD "https://github.com/linuxdeploy/linuxdeploy-plugin-appimage/releases/download/continuous/linuxdeploy-plugin-appimage-x86_64.AppImage"
+# "${CMAKE_SOURCE_DIR}/dist/linuxdeploy-plugin-appimage-x86_64.AppImage" SHOW_PROGRESS)
+# endif()
+
+
+#   execute_process(COMMAND chmod +x "${CMAKE_SOURCE_DIR}/dist/linuxdeploy-x86_64.AppImage")
+#   execute_process(COMMAND chmod +x "${CMAKE_SOURCE_DIR}/dist/linuxdeploy-plugin-qt-x86_64.AppImage")
+#   execute_process(COMMAND chmod +x "${CMAKE_SOURCE_DIR}/dist/linuxdeploy-plugin-appimage-x86_64.AppImage")
+
+#   message(STATUS "aaaa" ${CMAKE_PREFIX_PATH})
+
+#   # execute_process(COMMAND ${CMAKE_SOURCE_DIR}/dist/linuxdeploy-x86_64.AppImage --output=appimage --create-desktop-file
+#   #     --icon-file=${CMAKE_CURRENT_BINARY_DIR}/BleHelper.svg --executable=${CMAKE_CURRENT_BINARY_DIR}/BleHelper
+#   #     --appdir ${CMAKE_SOURCE_DIR}/package --plugin=qt)
+
+#   # 添加一个自定义命令来执行linuxdeploy-x86_64.AppImage
+#   add_custom_target(DeployAppimage
+#       COMMAND ${CMAKE_SOURCE_DIR}/dist/linuxdeploy-x86_64.AppImage --output=appimage --create-desktop-file
+#              --icon-file=${CMAKE_CURRENT_BINARY_DIR}/BleHelper.svg --executable=${CMAKE_CURRENT_BINARY_DIR}/BleHelper
+#              --appdir=${CMAKE_SOURCE_DIR}/package --plugin=qt
+#       WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/dist
+#       COMMENT "Deploying with linuxdeploy..."
+#         SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+#   )
+
+#   # export PATH=/opt/Qt5.9.8/5.9.8/gcc_64/bin:$PATH
+#   # export LD_LIBRARY_PATH=/opt/Qt5.9.8/5.9.8/gcc_64/lib:$LD_LIBRARY_PATH
+#   # export QT_PLUGIN_PATH=/opt/Qt5.9.8/5.9.8/gcc_64/plugins:$QT_PLUGIN_PATH
+#   # export QML2_IMPORT_PATH=/opt/Qt5.9.8/5.9.8/gcc_64/qml:$QML2_IMPORT_PATH
+
+#   set(ENV{LD_LIBRARY_PATH} "${CMAKE_PREFIX_PATH}/lib:$LD_LIBRARY_PATH")
+#   set(ENV{QT_PLUGIN_PATH} "${CMAKE_PREFIX_PATH}/plugins:$QT_PLUGIN_PATH")
+#   set(ENV{QML2_IMPORT_PATH} "${CMAKE_PREFIX_PATH}/qml:$QML2_IMPORT_PATH")
+
+# # execute_process(COMMAND ${CMAKE_SOURCE_DIR}/dist/linuxdeploy-x86_64.AppImage --output=appimage --create-desktop-file
+# #   --icon-file=${CMAKE_CURRENT_BINARY_DIR}/BleHelper.svg --executable=${CMAKE_CURRENT_BINARY_DIR}/BleHelper
+# #   --appdir ${CMAKE_SOURCE_DIR}/package --plugin=qt)
+
+#   # 添加一个自定义目标来设置环境变量并执行linuxdeploy-x86_64.AppImage
+#   add_custom_target(DeployAppimageALL
+#       COMMAND ${CMAKE_COMMAND} -E env
+#           LD_LIBRARY_PATH=${CMAKE_PREFIX_PATH}/lib:$ENV{LD_LIBRARY_PATH}
+#           QT_PLUGIN_PATH=${CMAKE_PREFIX_PATH}/plugins:$ENV{QT_PLUGIN_PATH}
+#           QML2_IMPORT_PATH=${CMAKE_PREFIX_PATH}/qml:$ENV{QML2_IMPORT_PATH}
+#           ${CMAKE_SOURCE_DIR}/dist/linuxdeploy-x86_64.AppImage
+#           --output=appimage
+#           --create-desktop-file
+#           --icon-file=${CMAKE_CURRENT_BINARY_DIR}/BleHelper.svg
+#           --executable=${CMAKE_CURRENT_BINARY_DIR}/BleHelper
+#           --appdir=${CMAKE_SOURCE_DIR}/package
+#           --plugin=qt
+#       WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/dist
+#       SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+#   )
+
+#   # execute_process(COMMAND ${CMAKE_SOURCE_DIR}/dist/linuxdeploy-x86_64.AppImage --list-plugins)
+
 endif()
