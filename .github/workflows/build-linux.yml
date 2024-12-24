@@ -71,6 +71,7 @@ jobs:
         run: |
           mkdir -p ./dist/
           mkdir -p ./dist/usr/bin/
+          mkdir -p ./package/
           cp ./BleHelper/resources/images/icons/logo.svg ./dist/${{ env.targetName }}.svg
           cp ./build/BleHelper/BleHelper ./dist/${{ env.targetName }}
           cp -r ./build/BleHelper/i18n ./dist/usr/bin/i18n/
