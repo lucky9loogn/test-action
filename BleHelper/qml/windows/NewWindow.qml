@@ -9,21 +9,25 @@ import "../controls"
 
 FluWindow {
     id: window
-    width: 800
-    height: 600
-    minimumWidth: 768
-    minimumHeight: 576
-    launchMode: FluWindowType.SingleInstance
+
     autoDestroy: true
+    height: 600
+    launchMode: FluWindowType.SingleInstance
+    minimumHeight: 576
+    minimumWidth: 768
     showStayTop: true
+    width: 800
+
     onInitArgument: arg => {
         window.title = arg.title;
         loader.setSource(arg.url, {
             "animationEnabled": false
         });
     }
+
     FluLoader {
         id: loader
+
         anchors.fill: parent
     }
 }

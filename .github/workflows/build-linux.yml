@@ -88,7 +88,7 @@ jobs:
           path: ${{ env.targetName }}.AppImage
 
       - name: Upload release
-        # if: startsWith(github.event.ref, 'refs/tags/')
+        if: startsWith(github.event.ref, 'refs/tags/')
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}

@@ -7,22 +7,7 @@ import FluentUI
 
 Button {
     id: control
-    display: Button.TextBesideIcon
-    property int iconSize: 20
-    property int iconSource
-    property bool disabled: false
-    property int radius: 4
-    property string contentDescription: ""
-    property color hoverColor: FluTheme.itemHoverColor
-    property color pressedColor: FluTheme.itemPressColor
-    property color normalColor: FluTheme.itemNormalColor
-    property color disableColor: FluTheme.itemNormalColor
-    property Component iconDelegate: {
-        if (iconSource >= FluIcon.GlobalNavButton && iconSource <= FluIcon.ClickedOutLoudSolidBold) {
-            return com_icon;
-        }
-        return com_my_icon;
-    }
+
     property color color: {
         if (!enabled) {
             return disableColor;
@@ -32,6 +17,10 @@ Button {
         }
         return hovered ? hoverColor : normalColor;
     }
+    property string contentDescription: ""
+    property color disableColor: FluTheme.itemNormalColor
+    property bool disabled: false
+    property color hoverColor: FluTheme.itemHoverColor
     property color iconColor: {
         if (FluTheme.dark) {
             if (!enabled) {
@@ -45,79 +34,35 @@ Button {
             return Qt.rgba(0, 0, 0, 1);
         }
     }
+    property Component iconDelegate: {
+        if (iconSource >= FluIcon.GlobalNavButton && iconSource <= FluIcon.ClickedOutLoudSolidBold) {
+            return com_icon;
+        }
+        return com_my_icon;
+    }
+    property int iconSize: 20
+    property int iconSource
+    property color normalColor: FluTheme.itemNormalColor
+    property color pressedColor: FluTheme.itemPressColor
+    property int radius: 4
     property color textColor: FluTheme.fontPrimaryColor
-    Accessible.role: Accessible.Button
-    Accessible.name: control.text
+
     Accessible.description: contentDescription
-    Accessible.onPressAction: control.clicked()
-    focusPolicy: Qt.TabFocus
-    verticalPadding: 6
-    horizontalPadding: 6
+    Accessible.name: control.text
+    Accessible.role: Accessible.Button
+    display: Button.IconOnly
     enabled: !disabled
+    focusPolicy: Qt.TabFocus
     font: FluTextStyle.Caption
+    horizontalPadding: 6
+    verticalPadding: 6
+
     background: Rectangle {
-        radius: control.radius
         color: control.color
+        radius: control.radius
+
         FluFocusRectangle {
             visible: control.activeFocus
-        }
-    }
-    Component {
-        id: com_icon
-        FluIcon {
-            id: text_icon
-            font.pixelSize: iconSize
-            iconSize: control.iconSize
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            iconColor: control.iconColor
-            iconSource: control.iconSource
-        }
-    }
-    Component {
-        id: com_my_icon
-        MyFluIcon {
-            id: text_icon
-            font.pixelSize: iconSize
-            iconSize: control.iconSize
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            iconColor: control.iconColor
-            iconSource: control.iconSource
-        }
-    }
-    Component {
-        id: com_row
-        RowLayout {
-            FluLoader {
-                sourceComponent: iconDelegate
-                Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
-                visible: display !== Button.TextOnly
-            }
-            FluText {
-                text: control.text
-                Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
-                visible: display !== Button.IconOnly
-                color: control.textColor
-                font: control.font
-            }
-        }
-    }
-    Component {
-        id: com_column
-        ColumnLayout {
-            FluLoader {
-                sourceComponent: iconDelegate
-                Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
-                visible: display !== Button.TextOnly
-            }
-            FluText {
-                text: control.text
-                Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
-                visible: display !== Button.IconOnly
-                color: control.textColor
-                font: control.font
-            }
         }
     }
     contentItem: FluLoader {
@@ -128,8 +73,78 @@ Button {
             return com_row;
         }
     }
+
+    Accessible.onPressAction: control.clicked()
+
+    Component {
+        id: com_icon
+
+        FluIcon {
+            id: text_icon
+
+            font.pixelSize: iconSize
+            horizontalAlignment: Text.AlignHCenter
+            iconColor: control.iconColor
+            iconSize: control.iconSize
+            iconSource: control.iconSource
+            verticalAlignment: Text.AlignVCenter
+        }
+    }
+    Component {
+        id: com_my_icon
+
+        MyFluIcon {
+            id: text_icon
+
+            font.pixelSize: iconSize
+            horizontalAlignment: Text.AlignHCenter
+            iconColor: control.iconColor
+            iconSize: control.iconSize
+            iconSource: control.iconSource
+            verticalAlignment: Text.AlignVCenter
+        }
+    }
+    Component {
+        id: com_row
+
+        RowLayout {
+            FluLoader {
+                Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
+                sourceComponent: iconDelegate
+                visible: display !== Button.TextOnly
+            }
+            FluText {
+                Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
+                color: control.textColor
+                font: control.font
+                text: control.text
+                visible: display !== Button.IconOnly
+            }
+        }
+    }
+    Component {
+        id: com_column
+
+        ColumnLayout {
+            FluLoader {
+                Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
+                sourceComponent: iconDelegate
+                visible: display !== Button.TextOnly
+            }
+            FluText {
+                Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
+                color: control.textColor
+                font: control.font
+                text: control.text
+                visible: display !== Button.IconOnly
+            }
+        }
+    }
     FluTooltip {
         id: tool_tip
+
+        delay: 1000
+        text: control.text
         visible: {
             if (control.text === "") {
                 return false;
@@ -139,7 +154,5 @@ Button {
             }
             return hovered;
         }
-        text: control.text
-        delay: 1000
     }
 }

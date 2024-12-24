@@ -6,17 +6,18 @@ import FluentUI
 
 Button {
     id: control
-    property bool clickable: true
-    property bool disabled: false
-    property string contentDescription: ""
-    property color normalColor: FluTheme.primaryColor
-    property color hoverColor: FluTheme.dark ? Qt.darker(normalColor, 1.15) : Qt.lighter(normalColor, 1.15)
-    property color pressedColor: FluTheme.dark ? Qt.darker(normalColor, 1.3) : Qt.lighter(normalColor, 1.3)
-    property color disableColor: FluTheme.dark ? Qt.rgba(82 / 255, 82 / 255, 82 / 255, 1) : Qt.rgba(199 / 255, 199 / 255, 199 / 255, 1)
-    property color backgroundHoverColor: FluTheme.itemHoverColor
-    property color backgroundPressedColor: FluTheme.itemPressColor
-    property color backgroundNormalColor: FluTheme.itemNormalColor
+
     property color backgroundDisableColor: FluTheme.itemNormalColor
+    property color backgroundHoverColor: FluTheme.itemHoverColor
+    property color backgroundNormalColor: FluTheme.itemNormalColor
+    property color backgroundPressedColor: FluTheme.itemPressColor
+    property bool clickable: true
+    property string contentDescription: ""
+    property color disableColor: FluTheme.dark ? Qt.rgba(82 / 255, 82 / 255, 82 / 255, 1) : Qt.rgba(199 / 255, 199 / 255, 199 / 255, 1)
+    property bool disabled: false
+    property color hoverColor: FluTheme.dark ? Qt.darker(normalColor, 1.15) : Qt.lighter(normalColor, 1.15)
+    property color normalColor: FluTheme.primaryColor
+    property color pressedColor: FluTheme.dark ? Qt.darker(normalColor, 1.3) : Qt.lighter(normalColor, 1.3)
     property bool textBold: true
     property color textColor: {
         if (disabled) {
@@ -27,12 +28,17 @@ Button {
         }
         return hovered ? hoverColor : normalColor;
     }
-    verticalPadding: 6
-    horizontalPadding: 6
+
+    Accessible.description: contentDescription
+    Accessible.name: control.text
+    Accessible.role: Accessible.Button
     enabled: !disabled && clickable
+    focusPolicy: Qt.TabFocus
     font: FluTextStyle.Body
+    horizontalPadding: 6
+    verticalPadding: 6
+
     background: Rectangle {
-        radius: 4
         color: {
             if (!enabled) {
                 return backgroundDisableColor;
@@ -45,22 +51,22 @@ Button {
             }
             return backgroundNormalColor;
         }
+        radius: 4
+
         FluFocusRectangle {
-            visible: control.visualFocus
             radius: 8
+            visible: control.visualFocus
         }
     }
-    focusPolicy: Qt.TabFocus
-    Accessible.role: Accessible.Button
-    Accessible.name: control.text
-    Accessible.description: contentDescription
-    Accessible.onPressAction: control.clicked()
     contentItem: FluText {
         id: btn_text
-        text: control.text
+
+        color: control.textColor
         font: control.font
         horizontalAlignment: Text.AlignHCenter
+        text: control.text
         verticalAlignment: Text.AlignVCenter
-        color: control.textColor
     }
+
+    Accessible.onPressAction: control.clicked()
 }

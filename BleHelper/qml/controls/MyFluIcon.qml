@@ -5,6 +5,7 @@ import FluentUI
 
 Text {
     id: control
+
     enum Icon {
         Scan = 65,
         Details,
@@ -27,8 +28,6 @@ Text {
         Unfavorite
     }
 
-    property int iconSource
-    property int iconSize: 24
     property color iconColor: {
         if (FluTheme.dark) {
             if (!enabled) {
@@ -42,15 +41,20 @@ Text {
             return Qt.rgba(0, 0, 0, 1);
         }
     }
+    property int iconSize: 24
+    property int iconSource
+
+    color: iconColor
     font.family: font_loader.name
     font.pixelSize: iconSize
     horizontalAlignment: Text.AlignHCenter
-    verticalAlignment: Text.AlignVCenter
-    color: iconColor
-    text: (String.fromCharCode(iconSource).toString(16))
     opacity: iconSource > 0
+    text: (String.fromCharCode(iconSource).toString(16))
+    verticalAlignment: Text.AlignVCenter
+
     FontLoader {
         id: font_loader
+
         source: "qrc:/resources/fonts/BleHelperIcons.ttf"
     }
 }

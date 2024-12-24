@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(
   BleHelper
+  VERSION ${MAJOR_VERSION}.${MINOR_VERSION}
   DESCRIPTION "BLE Helper"
   LANGUAGES CXX)
 

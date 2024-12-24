@@ -11,36 +11,39 @@ import "../models"
 
 FluScrollablePage {
     id: page
+
     padding: 0
+
     header: Item {
         implicitHeight: 50
+
         FluText {
-            text: qsTr("Settings")
             font: FluTextStyle.Title
+            text: qsTr("Settings")
+
             anchors {
-                verticalCenter: parent.verticalCenter
                 left: parent.left
                 leftMargin: 16
+                verticalCenter: parent.verticalCenter
             }
         }
     }
 
     ColumnLayout {
+        Layout.bottomMargin: 16
         Layout.fillWidth: true
         Layout.leftMargin: 16
         Layout.rightMargin: 16
         Layout.topMargin: 16
-        Layout.bottomMargin: 16
         spacing: 4
 
         /* Appearance */
         FluText {
-            text: qsTr("Appearance")
-            font: FluTextStyle.BodyStrong
-            Layout.topMargin: 10
             Layout.bottomMargin: 5
+            Layout.topMargin: 10
+            font: FluTextStyle.BodyStrong
+            text: qsTr("Appearance")
         }
-
         FluFrame {
             Layout.fillWidth: true
             Layout.preferredHeight: 70
@@ -48,29 +51,17 @@ FluScrollablePage {
 
             FluText {
                 text: qsTr("Application Theme")
+
                 anchors {
                     left: parent.left
                     verticalCenter: parent.verticalCenter
                 }
             }
-
             MyFluComboBox {
-                anchors {
-                    right: parent.right
-                    verticalCenter: parent.verticalCenter
-                }
-                width: Math.max(180, implicitWidth)
                 textRole: "text"
                 valueRole: "value"
-                onActivated: {
-                    if (FluTheme.darkMode !== currentValue) {
-                        FluTheme.darkMode = currentValue;
-                        SettingsManager.saveDarkMode(FluTheme.darkMode);
-                    }
-                }
-                Component.onCompleted: {
-                    currentIndex = indexOfValue(FluTheme.darkMode);
-                }
+                width: Math.max(180, implicitWidth)
+
                 model: ListModel {
                     ListElement {
                         text: qsTr("Use System Setting")
@@ -85,9 +76,23 @@ FluScrollablePage {
                         value: FluThemeType.Dark
                     }
                 }
+
+                Component.onCompleted: {
+                    currentIndex = indexOfValue(FluTheme.darkMode);
+                }
+                onActivated: {
+                    if (FluTheme.darkMode !== currentValue) {
+                        FluTheme.darkMode = currentValue;
+                        SettingsManager.saveDarkMode(FluTheme.darkMode);
+                    }
+                }
+
+                anchors {
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                }
             }
         }
-
         FluFrame {
             Layout.fillWidth: true
             Layout.preferredHeight: 70
@@ -95,29 +100,17 @@ FluScrollablePage {
 
             FluText {
                 text: qsTr("Navigation Pane Display Mode")
+
                 anchors {
                     left: parent.left
                     verticalCenter: parent.verticalCenter
                 }
             }
-
             MyFluComboBox {
-                anchors {
-                    right: parent.right
-                    verticalCenter: parent.verticalCenter
-                }
-                width: Math.max(180, implicitWidth)
                 textRole: "text"
                 valueRole: "value"
-                onActivated: {
-                    if (GlobalModel.navigationViewType !== currentValue) {
-                        GlobalModel.navigationViewType = currentValue;
-                        SettingsManager.saveNavigationViewType(GlobalModel.navigationViewType);
-                    }
-                }
-                Component.onCompleted: {
-                    currentIndex = indexOfValue(GlobalModel.navigationViewType);
-                }
+                width: Math.max(180, implicitWidth)
+
                 model: ListModel {
                     ListElement {
                         text: qsTr("Open")
@@ -136,58 +129,77 @@ FluScrollablePage {
                         value: FluNavigationViewType.Auto
                     }
                 }
+
+                Component.onCompleted: {
+                    currentIndex = indexOfValue(GlobalModel.navigationViewType);
+                }
+                onActivated: {
+                    if (GlobalModel.navigationViewType !== currentValue) {
+                        GlobalModel.navigationViewType = currentValue;
+                        SettingsManager.saveNavigationViewType(GlobalModel.navigationViewType);
+                    }
+                }
+
+                anchors {
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                }
             }
         }
-
         MyFluExpander {
             Layout.fillWidth: true
-            headerHeight: 70
             contentHeight: accent_color_expander_content_container.implicitHeight
             expand: true
+            headerHeight: 70
             headerText: qsTr("Accent Color")
+
             content: ColumnLayout {
                 id: accent_color_expander_content_container
+
                 anchors.fill: parent
 
                 ColumnLayout {
-                    Layout.topMargin: 16
                     Layout.bottomMargin: 16
-
+                    Layout.topMargin: 16
                     spacing: 16
 
                     RowLayout {
+                        Layout.fillWidth: true
                         Layout.leftMargin: 16
                         Layout.rightMargin: 16
-                        Layout.fillWidth: true
 
                         FluText {
                             Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
                             Layout.fillWidth: true
                             text: qsTr("Preset Colors")
                         }
-
                         Row {
                             Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
                             spacing: 4
+
                             Repeater {
                                 model: GlobalModel.presetColors
+
                                 delegate: Rectangle {
-                                    width: 30
+                                    border.color: modelData.darker
+                                    color: accent_color_item_mouse_area.containsMouse ? Qt.lighter(modelData.normal, 1.1) : modelData.normal
                                     height: 30
                                     radius: 4
-                                    color: accent_color_item_mouse_area.containsMouse ? Qt.lighter(modelData.normal, 1.1) : modelData.normal
-                                    border.color: modelData.darker
+                                    width: 30
+
                                     FluIcon {
                                         anchors.centerIn: parent
-                                        iconSource: FluentIcons.AcceptMedium
-                                        iconSize: 16
-                                        visible: modelData === FluTheme.accentColor
                                         color: FluTheme.dark ? Qt.rgba(0, 0, 0, 1) : Qt.rgba(1, 1, 1, 1)
+                                        iconSize: 16
+                                        iconSource: FluentIcons.AcceptMedium
+                                        visible: modelData === FluTheme.accentColor
                                     }
                                     MouseArea {
                                         id: accent_color_item_mouse_area
+
                                         anchors.fill: parent
                                         hoverEnabled: true
+
                                         onClicked: {
                                             FluTheme.accentColor = modelData;
                                             SettingsManager.saveAccentNormalColor(FluTheme.accentColor.normal);
@@ -198,16 +210,14 @@ FluScrollablePage {
                             }
                         }
                     }
-
                     FluDivider {
                         Layout.fillWidth: true
                         orientation: Qt.Horizontal
                     }
-
                     RowLayout {
+                        Layout.fillWidth: true
                         Layout.leftMargin: 16
                         Layout.rightMargin: 16
-                        Layout.fillWidth: true
                         spacing: 12
 
                         FluText {
@@ -215,44 +225,46 @@ FluScrollablePage {
                             Layout.fillWidth: true
                             text: qsTr("Custom Colors")
                         }
-
                         MyFluColorPicker {
                             id: theme_color_picker
+
                             Layout.alignment: Qt.AlignVCenter
-                            width: 30
-                            height: 30
-                            enabled: false
-                            isAlphaEnabled: false
-                            dialogHeight: 465
                             current: FluTheme.accentColor.normal
-                            background: Rectangle {
-                                radius: 5
-                                color: theme_color_picker.current
-                                border.color: FluTheme.dividerColor
-                            }
+                            dialogHeight: 465
+                            enabled: false
+                            height: 30
+                            isAlphaEnabled: false
                             visible: !GlobalModel.presetColors.includes(FluTheme.accentColor)
+                            width: 30
+
+                            background: Rectangle {
+                                border.color: FluTheme.dividerColor
+                                color: theme_color_picker.current
+                                radius: 5
+                            }
+
                             onAccepted: {
                                 FluTheme.accentColor = GlobalModel.createAccentColor(current);
                                 SettingsManager.saveAccentNormalColor(current);
                             }
+
                             FluIcon {
                                 anchors.centerIn: parent
-                                iconSource: FluentIcons.AcceptMedium
-                                iconSize: 16
                                 color: FluTheme.dark ? Qt.rgba(0, 0, 0, 1) : Qt.rgba(1, 1, 1, 1)
+                                iconSize: 16
+                                iconSource: FluentIcons.AcceptMedium
                             }
                         }
-
                         FluButton {
-                            text: qsTr("View Colors")
                             Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
+                            text: qsTr("View Colors")
+
                             onClicked: theme_color_picker.clicked()
                         }
                     }
                 }
             }
         }
-
         FluFrame {
             Layout.fillWidth: true
             Layout.preferredHeight: 70
@@ -260,27 +272,28 @@ FluScrollablePage {
 
             FluText {
                 text: qsTr("Animation Effects")
+
                 anchors {
                     left: parent.left
                     verticalCenter: parent.verticalCenter
                 }
             }
-
             FluToggleSwitch {
-                anchors {
-                    right: parent.right
-                    verticalCenter: parent.verticalCenter
-                }
                 checked: FluTheme.animationEnabled
                 text: checked ? qsTr("On") : qsTr("Off")
                 textRight: false
+
                 onClicked: {
                     FluTheme.animationEnabled = checked;
                     SettingsManager.saveAnimationEnabled(FluTheme.animationEnabled);
                 }
+
+                anchors {
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                }
             }
         }
-
         FluFrame {
             Layout.fillWidth: true
             Layout.preferredHeight: 70
@@ -288,27 +301,28 @@ FluScrollablePage {
 
             FluText {
                 text: qsTr("Transparency Effects")
+
                 anchors {
                     left: parent.left
                     verticalCenter: parent.verticalCenter
                 }
             }
-
             FluToggleSwitch {
-                anchors {
-                    right: parent.right
-                    verticalCenter: parent.verticalCenter
-                }
                 checked: FluTheme.blurBehindWindowEnabled
                 text: checked ? qsTr("On") : qsTr("Off")
                 textRight: false
+
                 onClicked: {
                     FluTheme.blurBehindWindowEnabled = checked;
                     SettingsManager.saveBlurBehindWindowEnabled(FluTheme.blurBehindWindowEnabled);
                 }
+
+                anchors {
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                }
             }
         }
-
         FluFrame {
             Layout.fillWidth: true
             Layout.preferredHeight: 70
@@ -316,35 +330,36 @@ FluScrollablePage {
 
             FluText {
                 text: qsTr("Use Native Text Rendering")
+
                 anchors {
                     left: parent.left
                     verticalCenter: parent.verticalCenter
                 }
             }
-
             FluToggleSwitch {
-                anchors {
-                    right: parent.right
-                    verticalCenter: parent.verticalCenter
-                }
                 checked: FluTheme.nativeText
                 text: checked ? qsTr("On") : qsTr("Off")
                 textRight: false
+
                 onClicked: {
                     FluTheme.nativeText = checked;
                     SettingsManager.saveNativeTextEnabled(FluTheme.nativeText);
+                }
+
+                anchors {
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
                 }
             }
         }
 
         /* Localization */
         FluText {
-            text: qsTr("Localization")
-            font: FluTextStyle.BodyStrong
-            Layout.topMargin: 15
             Layout.bottomMargin: 5
+            Layout.topMargin: 15
+            font: FluTextStyle.BodyStrong
+            text: qsTr("Localization")
         }
-
         FluFrame {
             Layout.fillWidth: true
             Layout.preferredHeight: 70
@@ -352,41 +367,42 @@ FluScrollablePage {
 
             FluText {
                 text: qsTr("Language")
+
                 anchors {
                     left: parent.left
                     verticalCenter: parent.verticalCenter
                 }
             }
-
             MyFluComboBox {
-                anchors {
-                    right: parent.right
-                    verticalCenter: parent.verticalCenter
-                }
-                width: Math.max(180, implicitWidth)
-                valueRole: "code"
+                model: SettingsManager.supportedLanguages
                 textRole: "name"
+                valueRole: "code"
+                width: Math.max(180, implicitWidth)
+
+                Component.onCompleted: {
+                    currentIndex = indexOfValue(GlobalModel.language);
+                }
                 onActivated: {
                     if (GlobalModel.language !== currentValue) {
                         GlobalModel.language = currentValue;
                         SettingsManager.saveLanguage(GlobalModel.language);
                     }
                 }
-                Component.onCompleted: {
-                    currentIndex = indexOfValue(GlobalModel.language);
+
+                anchors {
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
                 }
-                model: SettingsManager.supportedLanguages
             }
         }
 
         /* Bluetooth */
         FluText {
-            text: qsTr("Bluetooth")
-            font: FluTextStyle.BodyStrong
-            Layout.topMargin: 15
             Layout.bottomMargin: 5
+            Layout.topMargin: 15
+            font: FluTextStyle.BodyStrong
+            text: qsTr("Bluetooth")
         }
-
         FluFrame {
             Layout.fillWidth: true
             Layout.preferredHeight: 70
@@ -394,27 +410,17 @@ FluScrollablePage {
 
             FluText {
                 text: qsTr("Scan Timeout")
+
                 anchors {
                     left: parent.left
                     verticalCenter: parent.verticalCenter
                 }
             }
-
             MyFluComboBox {
-                anchors {
-                    right: parent.right
-                    verticalCenter: parent.verticalCenter
-                }
-                width: Math.max(180, implicitWidth)
                 textRole: "text"
                 valueRole: "value"
-                onActivated: {
-                    ClientManager.scanTimeout = currentValue;
-                    SettingsManager.saveScanTimeout(currentValue);
-                }
-                Component.onCompleted: {
-                    currentIndex = indexOfValue(ClientManager.scanTimeout);
-                }
+                width: Math.max(180, implicitWidth)
+
                 model: ListModel {
                     ListElement {
                         text: qsTr("15 Seconds")
@@ -441,9 +447,21 @@ FluScrollablePage {
                         value: 0 // If timeout is 0 the discovery runs until stop() is called.
                     }
                 }
+
+                Component.onCompleted: {
+                    currentIndex = indexOfValue(ClientManager.scanTimeout);
+                }
+                onActivated: {
+                    ClientManager.scanTimeout = currentValue;
+                    SettingsManager.saveScanTimeout(currentValue);
+                }
+
+                anchors {
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
+                }
             }
         }
-
         FluFrame {
             Layout.fillWidth: true
             Layout.preferredHeight: 70
@@ -451,130 +469,123 @@ FluScrollablePage {
 
             FluText {
                 text: qsTr("Enable UUID Name Mapping")
+
                 anchors {
                     left: parent.left
                     verticalCenter: parent.verticalCenter
                 }
             }
-
             FluToggleSwitch {
                 id: use_uuid_name_mapping_toggle_switch
-                anchors {
-                    right: parent.right
-                    verticalCenter: parent.verticalCenter
-                }
+
                 checked: ClientManager.isUuidNameMappingEnabled
                 text: checked ? qsTr("On") : qsTr("Off")
                 textRight: false
+
                 onClicked: {
                     ClientManager.isUuidNameMappingEnabled = checked;
                     SettingsManager.saveUuidNameMappingEnabled(checked);
+                }
+
+                anchors {
+                    right: parent.right
+                    verticalCenter: parent.verticalCenter
                 }
             }
         }
 
         /* About */
         FluText {
-            text: qsTr("About")
-            font: FluTextStyle.BodyStrong
-            Layout.topMargin: 15
             Layout.bottomMargin: 5
+            Layout.topMargin: 15
+            font: FluTextStyle.BodyStrong
+            text: qsTr("About")
         }
-
         MyFluExpander {
             Layout.fillWidth: true
-            headerHeight: 70
             contentHeight: about_expander_content_container.implicitHeight
             expand: false
+            headerHeight: 70
+
+            content: Item {
+                anchors.fill: parent
+
+                ColumnLayout {
+                    id: about_expander_content_container
+
+                    anchors.fill: parent
+                    spacing: 0
+
+                    FluText {
+                        Layout.leftMargin: 16
+                        Layout.topMargin: 16
+                        text: qsTr("Author: ") + ApplicationInfo.author
+                    }
+                    FluText {
+                        Layout.leftMargin: 16
+                        Layout.topMargin: 2
+                        text: qsTr("Built on: ") + ApplicationInfo.buildDateTime
+                    }
+                    FluDivider {
+                        Layout.fillWidth: true
+                        Layout.topMargin: 16
+                        orientation: Qt.Horizontal
+                    }
+                    MyFluTextButton {
+                        Layout.leftMargin: 10
+                        Layout.topMargin: 4
+                        text: qsTr("Check out this project on GitHub")
+
+                        onClicked: {
+                            Qt.openUrlExternally(ApplicationInfo.repositoryUrl);
+                        }
+                    }
+                    FluDivider {
+                        Layout.fillWidth: true
+                        Layout.topMargin: 4
+                        orientation: Qt.Horizontal
+                    }
+                    FluText {
+                        Layout.leftMargin: 16
+                        Layout.topMargin: 16
+                        text: qsTr("Dependencies & References")
+                    }
+                    MyFluTextButton {
+                        Layout.leftMargin: 12
+                        Layout.topMargin: 4
+                        horizontalPadding: 4
+                        text: "FluentUI"
+                        verticalPadding: 4
+
+                        onClicked: {
+                            Qt.openUrlExternally("https://github.com/zhuzichu520/FluentUI");
+                        }
+                    }
+                    MyFluTextButton {
+                        Layout.leftMargin: 12
+                        horizontalPadding: 4
+                        text: "heartrate-game"
+                        verticalPadding: 4
+
+                        onClicked: {
+                            Qt.openUrlExternally("https://github.com/qt/qtconnectivity/tree/dev/examples/bluetooth/heartrate-game");
+                        }
+                    }
+                    MyFluTextButton {
+                        Layout.bottomMargin: 12
+                        Layout.leftMargin: 12
+                        horizontalPadding: 4
+                        text: "lowenergyscanner"
+                        verticalPadding: 4
+
+                        onClicked: {
+                            Qt.openUrlExternally("https://github.com/qt/qtconnectivity/tree/dev/examples/bluetooth/lowenergyscanner");
+                        }
+                    }
+                }
+            }
             headerDelegate: Component {
                 Item {
-                    RowLayout {
-                        spacing: 12
-                        anchors {
-                            left: parent.left
-                            verticalCenter: parent.verticalCenter
-                        }
-
-                        FluImage {
-                            sourceSize.width: 30
-                            sourceSize.height: 30
-                            source: "qrc:/resources/images/icons/logo.svg"
-                        }
-
-                        Column {
-                            FluText {
-                                text: qsTr("BLE Helper")
-                            }
-                            FluText {
-                                text: ApplicationInfo.versionName
-                                font.pixelSize: 12
-                                textColor: FluTheme.fontSecondaryColor
-                            }
-                        }
-                    }
-
-                    Item {
-                        width: 24
-                        height: 24
-                        anchors {
-                            right: check_for_update_button.left
-                            rightMargin: 12
-                            verticalCenter: parent.verticalCenter
-                        }
-
-                        FluProgressRing {
-                            id: check_for_update_progress_ring
-                            anchors.fill: parent
-                            anchors.centerIn: parent
-                            strokeWidth: 3
-                            visible: false
-                            background: Item {}
-                        }
-
-                        FluIcon {
-                            id: check_for_update_success_icon
-                            visible: false
-                            anchors.centerIn: parent
-                            iconSource: FluentIcons.CheckMark
-                        }
-                    }
-
-                    FluButton {
-                        id: check_for_update_button
-                        text: qsTr("Check for Updates")
-                        anchors {
-                            right: parent.right
-                            rightMargin: 12
-                            verticalCenter: parent.verticalCenter
-                        }
-                        onClicked: {
-                            check_for_update_button.enabled = false;
-                            check_for_update_success_icon.visible = false;
-                            check_for_update_progress_ring.visible = true;
-                            checkForUpdates();
-                        }
-                    }
-
-                    FluContentDialog {
-                        id: update_dialog
-                        property string newVerson
-                        property string releaseInfo
-                        title: qsTr("Software Update")
-                        message: qsTr("There is a new update available: ") + qsTr("BLE Helper") + " " + newVerson + "\n\n" + releaseInfo
-                        buttonFlags: FluContentDialogType.NegativeButton | FluContentDialogType.PositiveButton
-                        negativeText: qsTr("Cancel")
-                        positiveText: qsTr("Update Now")
-                        onPositiveClicked: {
-                            Qt.openUrlExternally(ApplicationInfo.updateUrl);
-                        }
-
-                        function show(newVerson, releaseInfo) {
-                            update_dialog.newVerson = newVerson;
-                            update_dialog.releaseInfo = releaseInfo;
-                            update_dialog.open();
-                        }
-                    }
-
                     function checkForUpdates() {
                         console.debug("start check update...");
                         var url = ApplicationInfo.updateCheckUrl;
@@ -605,92 +616,95 @@ FluScrollablePage {
                         };
                         xhr.send();
                     }
-                }
-            }
 
-            content: Item {
-                anchors.fill: parent
+                    RowLayout {
+                        spacing: 12
 
-                ColumnLayout {
-                    id: about_expander_content_container
-                    spacing: 0
-                    anchors.fill: parent
-
-                    FluText {
-                        Layout.topMargin: 16
-                        Layout.leftMargin: 16
-                        text: qsTr("Author: ") + ApplicationInfo.author
-                        font.pixelSize: 12
-                    }
-
-                    FluText {
-                        Layout.topMargin: 8
-                        Layout.leftMargin: 16
-                        text: qsTr("Built on: ") + ApplicationInfo.buildDateTime
-                        font.pixelSize: 12
-                    }
-
-                    FluDivider {
-                        Layout.topMargin: 16
-                        Layout.fillWidth: true
-                        orientation: Qt.Horizontal
-                    }
-
-                    MyFluTextButton {
-                        Layout.topMargin: 5
-                        Layout.leftMargin: 10
-                        text: qsTr("Check out this project on GitHub")
-                        font.pixelSize: 12
-                        onClicked: {
-                            Qt.openUrlExternally(ApplicationInfo.repositoryUrl);
+                        anchors {
+                            left: parent.left
+                            verticalCenter: parent.verticalCenter
+                        }
+                        FluImage {
+                            source: "qrc:/resources/images/icons/logo.svg"
+                            sourceSize.height: 30
+                            sourceSize.width: 30
+                        }
+                        Column {
+                            FluText {
+                                text: qsTr("BLE Helper")
+                            }
+                            FluText {
+                                text: ApplicationInfo.versionName
+                                textColor: FluTheme.fontSecondaryColor
+                            }
                         }
                     }
+                    Item {
+                        height: 20
+                        width: 20
 
-                    FluDivider {
-                        Layout.topMargin: 5
-                        Layout.fillWidth: true
-                        orientation: Qt.Horizontal
-                    }
+                        anchors {
+                            right: check_for_update_button.left
+                            rightMargin: 12
+                            verticalCenter: parent.verticalCenter
+                        }
+                        FluProgressRing {
+                            id: check_for_update_progress_ring
 
-                    FluText {
-                        Layout.topMargin: 16
-                        Layout.leftMargin: 16
-                        text: qsTr("Dependencies & References")
-                        font.pixelSize: 12
-                    }
+                            anchors.centerIn: parent
+                            anchors.fill: parent
+                            strokeWidth: 2
+                            visible: false
 
-                    MyFluTextButton {
-                        Layout.topMargin: 5
-                        Layout.leftMargin: 12
-                        verticalPadding: 4
-                        horizontalPadding: 4
-                        text: "FluentUI"
-                        font.pixelSize: 12
-                        onClicked: {
-                            Qt.openUrlExternally("https://github.com/zhuzichu520/FluentUI");
+                            background: Item {
+                            }
+                        }
+                        FluIcon {
+                            id: check_for_update_success_icon
+
+                            anchors.centerIn: parent
+                            iconSource: FluentIcons.CheckMark
+                            visible: false
                         }
                     }
+                    FluButton {
+                        id: check_for_update_button
 
-                    MyFluTextButton {
-                        Layout.leftMargin: 12
-                        verticalPadding: 4
-                        horizontalPadding: 4
-                        text: "heartrate-game"
-                        font.pixelSize: 12
+                        text: qsTr("Check for Updates")
+
                         onClicked: {
-                            Qt.openUrlExternally("https://github.com/qt/qtconnectivity/tree/v6.7.0/examples/bluetooth/heartrate-game");
+                            check_for_update_button.enabled = false;
+                            check_for_update_success_icon.visible = false;
+                            check_for_update_progress_ring.visible = true;
+                            checkForUpdates();
+                        }
+
+                        anchors {
+                            right: parent.right
+                            rightMargin: 12
+                            verticalCenter: parent.verticalCenter
                         }
                     }
+                    FluContentDialog {
+                        id: update_dialog
 
-                    MyFluTextButton {
-                        Layout.leftMargin: 12
-                        Layout.bottomMargin: 12
-                        verticalPadding: 4
-                        horizontalPadding: 4
-                        text: "lowenergyscanner"
-                        font.pixelSize: 12
-                        onClicked: {
-                            Qt.openUrlExternally("https://github.com/qt/qtconnectivity/tree/v6.7.0/examples/bluetooth/lowenergyscanner");
+                        property string newVerson
+                        property string releaseInfo
+
+                        function show(newVerson, releaseInfo) {
+                            update_dialog.newVerson = newVerson;
+                            update_dialog.releaseInfo = releaseInfo;
+                            update_dialog.open();
+                        }
+
+                        buttonFlags: FluContentDialogType.NegativeButton | FluContentDialogType.PositiveButton
+                        message: qsTr("There is a new update available: ") + qsTr("BLE Helper") + " " + newVerson + "\n\n" + releaseInfo
+                        negativeText: qsTr("Cancel")
+                        positiveText: qsTr("Update Now")
+                        title: qsTr("Software Update")
+
+                        onPositiveClicked: {
+                            Qt.openUrlExternally(ApplicationInfo.updateUrl);
                         }
                     }
                 }

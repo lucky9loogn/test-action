@@ -7,20 +7,21 @@ import FluentUI
 
 Item {
     id: control
+
+    default property alias content: container.data
+    property int contentHeight: 300
+    property color disableColor: FluTheme.dark ? Qt.rgba(59 / 255, 59 / 255, 59 / 255, 1) : Qt.rgba(251 / 255, 251 / 255, 251 / 255, 1)
     property bool disabled: false
-    property int radius: 4
-    property string headerText: ""
-    property int headerHeight: 70
+    property color dividerColor: FluTheme.dark ? Qt.rgba(80 / 255, 80 / 255, 80 / 255, 1) : Qt.rgba(233 / 255, 233 / 255, 233 / 255, 1)
+    property bool expand: false
     property var headerDelegate: com_header
+    property int headerHeight: 70
     property int headerLeftPadding: 16
     property int headerRightPadding: 16
-    property bool expand: false
-    property int contentHeight: 300
-    default property alias content: container.data
-    property color normalColor: Window.active ? FluTheme.frameActiveColor : FluTheme.frameColor
+    property string headerText: ""
     property color hoverColor: FluTheme.dark ? Qt.rgba(50 / 255, 50 / 255, 50 / 255, 1) : Qt.rgba(246 / 255, 246 / 255, 246 / 255, 1)
-    property color disableColor: FluTheme.dark ? Qt.rgba(59 / 255, 59 / 255, 59 / 255, 1) : Qt.rgba(251 / 255, 251 / 255, 251 / 255, 1)
-    property color dividerColor: FluTheme.dark ? Qt.rgba(80 / 255, 80 / 255, 80 / 255, 1) : Qt.rgba(233 / 255, 233 / 255, 233 / 255, 1)
+    property color normalColor: Window.active ? FluTheme.frameActiveColor : FluTheme.frameColor
+    property int radius: 4
     property color textColor: {
         if (FluTheme.dark) {
             if (!control.enabled) {
@@ -40,49 +41,60 @@ Item {
             return Qt.rgba(0, 0, 0, 1);
         }
     }
+
+    clip: true
     enabled: !disabled
     implicitHeight: Math.max((layout_header.height + layout_container.height), layout_header.height)
     implicitWidth: 400
+
     QtObject {
         id: d
+
         property bool flag: false
+
         function toggle() {
             d.flag = true;
             expand = !expand;
             d.flag = false;
         }
     }
-    clip: true
     Component {
         id: com_header
+
         Item {
             FluText {
-                text: control.headerText
                 anchors.verticalCenter: parent.verticalCenter
                 color: control.textColor
+                text: control.headerText
             }
         }
     }
     Rectangle {
         id: layout_header
-        width: parent.width
-        height: control.headerHeight
-        radius: control.radius
+
         border.color: FluTheme.dividerColor
         color: control.normalColor
+        height: control.headerHeight
+        radius: control.radius
+        width: parent.width
+
         ColorAnimation on color {
             id: color_animation
+
             duration: FluTheme.animationEnabled ? 167 : 0
             easing.type: Easing.OutCubic
             from: layout_header.color
-            to: control_mouse.containsMouse ? control.normalColor : control.hoverColor
             running: false
+            to: control_mouse.containsMouse ? control.normalColor : control.hoverColor
         }
+
         MouseArea {
             id: control_mouse
+
             anchors.fill: parent
-            hoverEnabled: true
             enabled: control.enabled
+            hoverEnabled: true
+
             onClicked: {
                 d.toggle();
             }
@@ -93,27 +105,30 @@ Item {
             }
         }
         RowLayout {
+            spacing: 0
+
             anchors {
                 fill: parent
                 leftMargin: control.headerLeftPadding
                 rightMargin: control.headerRightPadding
             }
-
             FluLoader {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
                 Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+                Layout.fillHeight: true
+                Layout.fillWidth: true
                 sourceComponent: control.headerDelegate
             }
-
             FluIcon {
                 id: icon
+
                 Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
-                rotation: control.expand ? 0 : 180
+                iconSize: 12
                 iconSource: FluentIcons.ChevronUp
-                iconSize: 15
+                rotation: control.expand ? 0 : 180
+
                 Behavior on rotation {
                     enabled: FluTheme.animationEnabled
+
                     NumberAnimation {
                         duration: 167
                         easing.type: Easing.OutCubic
@@ -124,20 +139,24 @@ Item {
     }
     Item {
         id: layout_container
-        anchors {
-            top: layout_header.bottom
-            topMargin: -1
-            left: layout_header.left
-        }
-        visible: contentHeight + container.anchors.topMargin !== 0
+
+        clip: true
         height: contentHeight + container.anchors.topMargin
+        visible: contentHeight + container.anchors.topMargin !== 0
         width: parent.width
         z: -999
-        clip: true
+
+        anchors {
+            left: layout_header.left
+            top: layout_header.bottom
+            topMargin: -1
+        }
         Rectangle {
             id: container
+
             anchors.fill: parent
-            radius: control.radius
+            anchors.topMargin: -contentHeight
+            border.color: FluTheme.dividerColor
             clip: true
             color: {
                 if (Window.active) {
@@ -145,41 +164,45 @@ Item {
                 }
                 return FluTheme.frameColor;
             }
-            border.color: FluTheme.dividerColor
-            anchors.topMargin: -contentHeight
+            radius: control.radius
+
             states: [
                 State {
                     name: "expand"
                     when: control.expand
+
                     PropertyChanges {
-                        target: container
                         anchors.topMargin: 0
+                        target: container
                     }
                 },
                 State {
                     name: "collapsed"
                     when: !control.expand
+
                     PropertyChanges {
-                        target: container
                         anchors.topMargin: -contentHeight
+                        target: container
                     }
                 }
             ]
             transitions: [
                 Transition {
                     to: "expand"
+
                     NumberAnimation {
-                        properties: "anchors.topMargin"
                         duration: FluTheme.animationEnabled && d.flag ? 167 : 0
                         easing.type: Easing.OutCubic
+                        properties: "anchors.topMargin"
                     }
                 },
                 Transition {
                     to: "collapsed"
+
                     NumberAnimation {
-                        properties: "anchors.topMargin"
                         duration: FluTheme.animationEnabled && d.flag ? 167 : 0
                         easing.type: Easing.OutCubic
+                        properties: "anchors.topMargin"
                     }
                 }
             ]

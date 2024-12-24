@@ -21,19 +21,10 @@ ClientManager::ClientManager(QObject *parent) : BaseClass(parent)
 
 ClientManager::~ClientManager()
 {
-    qDeleteAll(_allDevices);
-    _allDevices.clear();
+    clearAllDevices();
     _filteredDevices.clear();
 
-    for (auto &chars : _allCharacteristics) {
-        qDeleteAll(chars);
-    }
-    _allCharacteristics.clear();
-
-    for (auto &descs : _allDescriptors) {
-        qDeleteAll(descs);
-    }
-    _allDescriptors.clear();
+    clearAllAttributes(false);
 }
 
 void ClientManager::enableBluetooth()
@@ -59,21 +50,7 @@ void ClientManager::disableBluetooth()
 void ClientManager::startScan()
 {
     if (_deviceDiscoveryAgent) {
-        QList<QString> devAddrToRemove;
-        for (auto it = _allDevices.begin(); it != _allDevices.end(); ++it) {
-            auto devAddr = it.key();
-            auto devInfo = it.value();
-            if (_connectedDeviceInfo && _connectedDeviceInfo->isConnected()
-                && _connectedDeviceInfo->address() == devAddr) {
-                continue; // 已连接的设备不删除
-            }
-
-            delete devInfo;
-            devAddrToRemove.append(devAddr);
-        }
-        for (const auto &devAddr : devAddrToRemove) {
-            _allDevices.remove(devAddr);
-        }
+        clearAllDevices();
 
         updateFilteredDevices();
 
@@ -211,11 +188,6 @@ void ClientManager::connectToDevice(const QString &address)
         _lowEnergyController->disconnectFromDevice();
         delete _lowEnergyController;
         _lowEnergyController = nullptr;
-
-        if (_connectedDeviceInfo) {
-            _connectedDeviceInfo->isConnected(false);
-            connectedDeviceInfo(nullptr);
-        }
     }
 
     showInfo("Connecting to device...");
@@ -277,7 +249,7 @@ void ClientManager::refreshAttributeName(const QString &uuid, AttributeType type
         if (_isUuidNameMappingEnabled && _serviceUuidDictionary.contains(uuid)) {
             newName = _serviceUuidDictionary[uuid];
         } else {
-            newName = Utils::getAttributeName(srvInfo->getQLowEnergyService());
+            newName = Utils::getAttributeName(srvInfo->service());
         }
         srvInfo->name(newName);
     } else if (AttributeType::Characteristic == type) {
@@ -290,7 +262,7 @@ void ClientManager::refreshAttributeName(const QString &uuid, AttributeType type
                 if (_isUuidNameMappingEnabled && _characteristicUuidDictionary.contains(uuid)) {
                     newName = _characteristicUuidDictionary[uuid];
                 } else {
-                    newName = Utils::getAttributeName(charInfo->getQLowEnergyCharacteristic());
+                    newName = Utils::getAttributeName(charInfo->characteristic());
                 }
                 charInfo->name(newName);
                 break;
@@ -434,6 +406,120 @@ bool ClientManager::exportUuidDictionary(const QString &fileName)
     return true;
 }
 
+void ClientManager::readCharacteristic(const ServiceInfo *srvInfo,
+                                       const CharacteristicInfo *charInfo)
+{
+    if (!srvInfo || !charInfo) {
+        showWarning("Read characteristic failed");
+        return;
+    }
+
+    QLowEnergyService *srv = srvInfo->service();
+
+    if (srv) {
+        const QLowEnergyCharacteristic &ch = charInfo->characteristic();
+        srv->readCharacteristic(ch);
+    } else {
+        showWarning("Read characteristic failed");
+    }
+}
+
+void ClientManager::writeCharacteristic(const ServiceInfo *srvInfo,
+                                        const CharacteristicInfo *charInfo,
+                                        const QByteArray &hexEncoded, WriteMode writeMode)
+{
+    if (!srvInfo || !charInfo) {
+        showWarning("Write characteristic failed");
+        return;
+    }
+
+    QLowEnergyService *srv = srvInfo->service();
+
+    if (srv) {
+        QByteArray newValue = QByteArray::fromHex(hexEncoded);
+        const QLowEnergyCharacteristic &ch = charInfo->characteristic();
+        QLowEnergyService::WriteMode mode = QLowEnergyService::WriteWithResponse;
+        if (WriteMode::WriteWithoutResponse == writeMode) {
+            mode = QLowEnergyService::WriteWithoutResponse;
+        }
+
+        srv->writeCharacteristic(ch, newValue, mode);
+    } else {
+        showWarning("Write characteristic failed");
+    }
+}
+
+void ClientManager::toggleNotifications(const ServiceInfo *srvInfo,
+                                        const CharacteristicInfo *charInfo)
+{
+    if (!srvInfo || !charInfo) {
+        showWarning("Toggle notifications failed");
+        return;
+    }
+    QLowEnergyService *srv = srvInfo->service();
+    const QLowEnergyCharacteristic &ch = charInfo->characteristic();
+    auto cccd = ch.clientCharacteristicConfiguration();
+    if (!cccd.isValid()) {
+        showWarning("Toggle notifications failed");
+        return;
+    }
+
+    if (srv) {
+        QByteArray cccdValue = cccd.value();
+
+        if (cccdValue != QLowEnergyCharacteristic::CCCDEnableNotification) {
+            srv->writeDescriptor(cccd, QLowEnergyCharacteristic::CCCDEnableNotification);
+        } else {
+            srv->writeDescriptor(cccd, QLowEnergyCharacteristic::CCCDDisable);
+        }
+    } else {
+        showWarning("Toggle notifications failed");
+    }
+}
+
+void ClientManager::toggleIndications(const ServiceInfo *srvInfo,
+                                      const CharacteristicInfo *charInfo)
+{
+    if (!srvInfo || !charInfo) {
+        showWarning("Toggle indications failed");
+        return;
+    }
+    QLowEnergyService *srv = srvInfo->service();
+    const QLowEnergyCharacteristic &ch = charInfo->characteristic();
+    auto cccd = ch.clientCharacteristicConfiguration();
+    if (!cccd.isValid()) {
+        showWarning("Toggle indications failed");
+        return;
+    }
+
+    if (srv) {
+        QByteArray cccdValue = cccd.value();
+
+        if (cccdValue != QLowEnergyCharacteristic::CCCDEnableIndication) {
+            srv->writeDescriptor(cccd, QLowEnergyCharacteristic::CCCDEnableIndication);
+        } else {
+            srv->writeDescriptor(cccd, QLowEnergyCharacteristic::CCCDDisable);
+        }
+    } else {
+        showWarning("Toggle indications failed");
+    }
+}
+
+void ClientManager::readDescriptor(const ServiceInfo *srvInfo, const DescriptorInfo *descInfo)
+{
+    if (!srvInfo || !descInfo) {
+        showWarning("Read descriptor failed");
+        return;
+    }
+    QLowEnergyService *srv = srvInfo->service();
+    const QLowEnergyDescriptor &d = descInfo->descriptor();
+    if (srv) {
+        srv->readDescriptor(d);
+    } else {
+        showWarning("Read descriptor failed");
+    }
+}
+
 bool ClientManager::isBluetoothOn() const
 {
     return _localDevice && _localDevice->isValid()
@@ -529,7 +615,7 @@ void ClientManager::refreshAllAttributesName()
         if (_isUuidNameMappingEnabled && _serviceUuidDictionary.contains(srvUuid)) {
             newName = _serviceUuidDictionary[srvUuid];
         } else {
-            newName = Utils::getAttributeName(srvInfo->getQLowEnergyService());
+            newName = Utils::getAttributeName(srvInfo->service());
         }
         srvInfo->name(newName);
 
@@ -541,7 +627,7 @@ void ClientManager::refreshAllAttributesName()
             if (_isUuidNameMappingEnabled && _characteristicUuidDictionary.contains(charUuid)) {
                 newName = _characteristicUuidDictionary[charUuid];
             } else {
-                newName = Utils::getAttributeName(charInfo->getQLowEnergyCharacteristic());
+                newName = Utils::getAttributeName(charInfo->characteristic());
             }
             charInfo->name(newName);
         }
@@ -553,6 +639,9 @@ void ClientManager::initializeVariables()
     filterParams(new FilterParams(this));
     isDeviceConnected(false);
     connectedDeviceInfo(nullptr);
+
+    clearAllDevices();
+    clearAllAttributes(true);
 
     scanTimeout(_settingsManager->scanTimeout());
     connect(this, &ClientManager::scanTimeoutChanged, this, &ClientManager::updateScanTimeout);
@@ -622,6 +711,124 @@ void ClientManager::addDeviceToFiltered(DeviceInfo *device)
     if (nameMatches && addressMatches && rssiMatches && favouriteMatches && connectedMatches
         && pairedMatches) {
         _filteredDevices.append(device);
+    }
+}
+
+void ClientManager::clearAllDevices()
+{
+    QList<QString> devAddrToRemove;
+    for (auto it = _allDevices.begin(); it != _allDevices.end(); ++it) {
+        auto devAddr = it.key();
+        auto devInfo = it.value();
+        if (_connectedDeviceInfo && _connectedDeviceInfo->isConnected()
+            && _connectedDeviceInfo->address() == devAddr) {
+            continue; // 已连接的设备不删除
+        }
+
+        delete devInfo;
+        devAddrToRemove.append(devAddr);
+    }
+    for (const auto &devAddr : devAddrToRemove) {
+        _allDevices.remove(devAddr);
+    }
+}
+
+void ClientManager::clearAllAttributes(bool emitChangedSignals)
+{
+    qDeleteAll(_allServices);
+    _allServices.clear();
+
+    for (auto it = _allCharacteristics.begin(); it != _allCharacteristics.end(); ++it) {
+        QMap<QString, CharacteristicInfo *> &chars = it.value();
+        qDeleteAll(chars);
+    }
+    _allCharacteristics.clear();
+
+    for (auto it = _allDescriptors.begin(); it != _allDescriptors.end(); ++it) {
+        QMap<QString, DescriptorInfo *> &descs = it.value();
+        qDeleteAll(descs);
+    }
+    _allDescriptors.clear();
+
+    if (emitChangedSignals) {
+        emit servicesChanged();
+        emit characteristicsChanged();
+        emit descriptorsChanged();
+    }
+}
+
+void ClientManager::handleCharacteristicUpdate(const QLowEnergyService *service,
+                                               const QLowEnergyCharacteristic &characteristic,
+                                               const QByteArray &value)
+{
+    if (!service) {
+        showWarning("Handle characteristic update failed");
+        return;
+    }
+
+    QString srvUuid = Utils::uuidToString(service->serviceUuid());
+    QString charUuid = Utils::uuidToString(characteristic.uuid());
+
+    if (!_allCharacteristics.contains(srvUuid)
+        && !_allCharacteristics[srvUuid].contains(charUuid)) {
+        showWarning("Handle characteristic update failed");
+        return;
+    }
+
+    QString valueHex = Utils::byteArrayToHex(value);
+    QString valueAscii = Utils::byteArrayToAscii(value);
+    QString valueDecimal = Utils::byteArrayToDecimal(value);
+
+    CharacteristicInfo *charInfo = _allCharacteristics[srvUuid][charUuid];
+    charInfo->valueHex(valueHex);
+    charInfo->valueAscii(valueAscii);
+    charInfo->valueDecimal(valueDecimal);
+}
+
+void ClientManager::handleDescriptorUpdate(const QLowEnergyService *service,
+                                           const QLowEnergyDescriptor &descriptor,
+                                           const QByteArray &value)
+{
+    if (!service) {
+        showWarning("Handle descriptor update failed");
+        return;
+    }
+
+    QString srvUuid = Utils::uuidToString(service->serviceUuid());
+
+    if (!_allCharacteristics.contains(srvUuid)) {
+        showWarning("Handle descriptor update failed");
+        return;
+    }
+
+    QList<QString> charUuids = _allCharacteristics[srvUuid].keys();
+
+    for (QString &charUuid : charUuids) {
+        if (!_allDescriptors.contains(charUuid)) {
+            continue;
+        }
+        auto descInfos = _allDescriptors[charUuid].values();
+        for (auto dInfo : descInfos) {
+            if (dInfo->descriptor() != descriptor) {
+                continue;
+            }
+
+            QBluetoothUuid::DescriptorType type = descriptor.type();
+
+            QString v = Utils::parseDescriptorValue(value, type);
+            dInfo->value(v);
+
+            if (QBluetoothUuid::DescriptorType::ClientCharacteristicConfiguration == type) {
+                unsigned char firstByte = static_cast<unsigned char>(value[0]);
+                bool enableNotifications = (firstByte & 0b00000001);
+                bool enableIndications = (firstByte & 0b00000010);
+                auto charInfo = _allCharacteristics[srvUuid][charUuid];
+                charInfo->enableNotifications(enableNotifications);
+                charInfo->enableIndications(enableIndications);
+            }
+
+            return;
+        }
     }
 }
 
@@ -795,22 +1002,6 @@ void ClientManager::controllerConnected()
     }
     connectedDeviceInfo(_currentSelectedDeviceInfo);
 
-    qDeleteAll(_allServices);
-    _allServices.clear();
-    emit servicesChanged();
-
-    for (auto &chars : _allCharacteristics) {
-        qDeleteAll(chars);
-    }
-    _allCharacteristics.clear();
-    emit characteristicsChanged();
-
-    for (auto &descs : _allDescriptors) {
-        qDeleteAll(descs);
-    }
-    _allDescriptors.clear();
-    emit descriptorsChanged();
-
     showInfo("Discovering services...");
     _lowEnergyController->discoverServices();
 }
@@ -830,6 +1021,8 @@ void ClientManager::controllerDisconnected()
         _connectedDeviceInfo->isConnected(false);
         connectedDeviceInfo(nullptr);
     }
+
+    clearAllAttributes(true);
 }
 
 void ClientManager::addService(const QBluetoothUuid &serviceUuid)
@@ -871,7 +1064,7 @@ void ClientManager::serviceScanFinished()
 
     auto srvInfos = _allServices.values();
     for (auto info : srvInfos) {
-        auto srv = info->getQLowEnergyService();
+        auto srv = info->service();
 
         connect(srv, &QLowEnergyService::errorOccurred, this, &ClientManager::serviceError);
         connect(srv, &QLowEnergyService::stateChanged, this, &ClientManager::serviceStateChanged);
@@ -885,7 +1078,7 @@ void ClientManager::serviceScanFinished()
         connect(srv, &QLowEnergyService::descriptorWritten, this,
                 &ClientManager::descriptorWritten);
 
-        srv->discoverDetails(QLowEnergyService::FullDiscovery);
+        srv->discoverDetails(QLowEnergyService::SkipValueDiscovery);
     }
 }
 
@@ -982,23 +1175,33 @@ void ClientManager::serviceStateChanged(QLowEnergyService::ServiceState state)
 void ClientManager::characteristicChanged(const QLowEnergyCharacteristic &characteristic,
                                           const QByteArray &value)
 {
+    auto service = qobject_cast<QLowEnergyService *>(sender());
+    handleCharacteristicUpdate(service, characteristic, value);
 }
 
 void ClientManager::characteristicRead(const QLowEnergyCharacteristic &characteristic,
                                        const QByteArray &value)
 {
+    auto service = qobject_cast<QLowEnergyService *>(sender());
+    handleCharacteristicUpdate(service, characteristic, value);
 }
 
 void ClientManager::characteristicWritten(const QLowEnergyCharacteristic &characteristic,
                                           const QByteArray &value)
 {
+    auto service = qobject_cast<QLowEnergyService *>(sender());
+    handleCharacteristicUpdate(service, characteristic, value);
 }
 
 void ClientManager::descriptorRead(const QLowEnergyDescriptor &descriptor, const QByteArray &value)
 {
+    auto service = qobject_cast<QLowEnergyService *>(sender());
+    handleDescriptorUpdate(service, descriptor, value);
 }
 
 void ClientManager::descriptorWritten(const QLowEnergyDescriptor &descriptor,
                                       const QByteArray &value)
 {
+    auto service = qobject_cast<QLowEnergyService *>(sender());
+    handleDescriptorUpdate(service, descriptor, value);
 }

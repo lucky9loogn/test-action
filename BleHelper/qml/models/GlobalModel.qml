@@ -6,8 +6,8 @@ import BleHelper
 import FluentUI
 
 QtObject {
-    property int navigationViewType: SettingsManager.navigationViewType()
     property string language: SettingsManager.language()
+    property int navigationViewType: SettingsManager.navigationViewType()
     property var presetColors: [FluColors.Yellow, FluColors.Orange, FluColors.Red, FluColors.Magenta, FluColors.Purple, FluColors.Blue, FluColors.Teal, FluColors.Green]
 
     function createAccentColor(color) {
