@@ -66,8 +66,25 @@ jobs:
           cmake -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release -GNinja ..
           cmake --build . --target all --config Release --parallel
 
-      - name: Check if svg file exists
-        run: if [ ! -f "${targetName}.svg" ]; then echo "File not found, creating..."; touch ${targetName}.svg; fi
+      # - name: Check if svg file exists
+      #   run: if [ ! -f "${targetName}.svg" ]; then echo "File not found, creating..."; touch ${targetName}.svg; fi
+
+      - name: Copy svg file
+        run: |
+          source_file="./BleHelper/resources/images/icons/logo.svg"
+          target_file="${targetName}.svg"
+          if [ -f "$source_file" ]; then
+            cp "$source_file" "$target_file"
+            if [ $? -ne 0 ]; then
+              echo "Failed to copy $source_file to $target_file"
+              exit 1
+            else
+              echo "Successfully copied $source_file to $target_file"
+            fi
+          else
+            echo "Source file $source_file not found"
+            exit 1
+          fi
 
       - name: package
         run: |
