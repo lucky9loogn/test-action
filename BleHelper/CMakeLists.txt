@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.20)
 
 project(
   BleHelper
-  VERSION ${MAJOR_VERSION}.${MINOR_VERSION}
   DESCRIPTION "BLE Helper"
   LANGUAGES CXX)
 
@@ -12,16 +11,6 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# 设置可执行文件输出目录
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE})
-
-if(APPLE)
-  set(APPLICATION_DIR_PATH
-      ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${PROJECT_NAME}.app/Contents/MacOS)
-else()
-  set(APPLICATION_DIR_PATH ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-endif()
 
 # 导入Qt相关依赖包
 find_package(Qt6 REQUIRED COMPONENTS Bluetooth Core Gui Quick)
@@ -115,8 +104,8 @@ qt_add_resources(
 target_include_directories(
   ${PROJECT_NAME}
   PRIVATE ${CMAKE_SOURCE_DIR}/FluentUI ${CMAKE_CURRENT_SOURCE_DIR}/src
-          ${CMAKE_CURRENT_SOURCE_DIR}/src/common
-          ${CMAKE_CURRENT_SOURCE_DIR}/src/ble)
+          ${CMAKE_CURRENT_SOURCE_DIR}/src/ble
+          ${CMAKE_CURRENT_SOURCE_DIR}/src/common)
 
 # 目标文件链接库
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt6::Bluetooth Qt6::Core Qt6::Gui
@@ -167,36 +156,31 @@ add_custom_target(
   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
   COMMAND ${QT_LRELEASE} ${ALL_TS_FILES}
   WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${APPLICATION_DIR_PATH}/i18n
-  COMMAND ${CMAKE_COMMAND} -E copy ${ALL_QM_FILES} ${APPLICATION_DIR_PATH}/i18n
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/i18n
+  COMMAND ${CMAKE_COMMAND} -E copy ${ALL_QM_FILES}
+          ${CMAKE_CURRENT_BINARY_DIR}/i18n
   COMMAND ${CMAKE_COMMAND} -E copy ${TRANSLATIONS_CONFIG_FILE}
-          ${APPLICATION_DIR_PATH}/i18n
+          ${CMAKE_CURRENT_BINARY_DIR}/i18n
   SOURCES ${ALL_TS_FILES})
 
 add_dependencies(${PROJECT_NAME} Script-UpdateTranslations)
 
 # 添加部署脚本
 if(CMAKE_BUILD_TYPE MATCHES "Release")
-  if(APPLE)
-    find_program(QT_DEPLOY_QT NAMES macdeployqt)
-    add_custom_target(
-      Script-DeployRelease
-      COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_SOURCE_DIR}/dist
-      COMMAND ${CMAKE_COMMAND} -E copy_directory
-              ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} ${CMAKE_SOURCE_DIR}/dist
-      COMMAND ${QT_DEPLOY_QT} ${CMAKE_SOURCE_DIR}/dist/${PROJECT_NAME}.app
-              -qmldir=${CMAKE_CURRENT_LIST_DIR}
-      COMMENT "MacOs Deploying Qt Dependencies After Build........."
-      SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
-      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-  endif()
   if(WIN32)
     find_program(QT_DEPLOY_QT NAMES windeployqt)
     add_custom_target(
       Script-DeployRelease
       COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_SOURCE_DIR}/dist
       COMMAND ${CMAKE_COMMAND} -E copy_directory
-              ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} ${CMAKE_SOURCE_DIR}/dist
+              ${CMAKE_CURRENT_BINARY_DIR}/i18n ${CMAKE_SOURCE_DIR}/dist/i18n
+      COMMAND
+        ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.exe
+        ${CMAKE_SOURCE_DIR}/dist
+      COMMAND
+        ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.exe.manifest
+        ${CMAKE_SOURCE_DIR}/dist
       COMMAND
         ${QT_DEPLOY_QT} --qmldir=${CMAKE_CURRENT_LIST_DIR} --plugindir
         ${CMAKE_SOURCE_DIR}/dist/plugins --no-translations --compiler-runtime

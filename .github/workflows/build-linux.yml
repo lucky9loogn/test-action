@@ -53,6 +53,7 @@ jobs:
         run: |
           sudo apt-get install -y libxcb-cursor0 libgl1-mesa-dev libxcb1-dev libgtk-3-dev libxkbcommon-x11-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-shape0-dev libxcb-xfixes0-dev libxcb-xinerama0-dev libxcb-sync-dev  libxcb-render-util0-dev libxcb-shm0-dev
           sudo apt install libfuse2
+          sudo apt install openssl
 
       - name: Install Qt linux deploy
         uses: miurahr/install-linuxdeploy-action@v1
@@ -66,38 +67,24 @@ jobs:
           cmake -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release -GNinja ..
           cmake --build . --target all --config Release --parallel
 
-      # - name: Check if svg file exists
-      #   run: if [ ! -f "${targetName}.svg" ]; then echo "File not found, creating..."; touch ${targetName}.svg; fi
-
-      - name: Copy svg file
+      - name: Copy files
         run: |
-          source_file="./BleHelper/resources/images/icons/logo.svg"
-          target_file="${targetName}.svg"
-          if [ -f "$source_file" ]; then
-            cp "$source_file" "$target_file"
-            if [ $? -ne 0 ]; then
-              echo "Failed to copy $source_file to $target_file"
-              exit 1
-            else
-              echo "Successfully copied $source_file to $target_file"
-            fi
-          else
-            echo "Source file $source_file not found"
-            exit 1
-          fi
+          mkdir dist
+          cp ./BleHelper/resources/images/icons/logo.svg ./dist/${targetName}.svg
+          cp ./build/BleHelper/BleHelper ./dist/${targetName}
+          cp -r ./build/BleHelper/i18n ./dist/i18n
 
-      - name: package
+      - name: Package
         run: |
           # make sure Qt plugin finds QML sources so it can deploy the imported files
           export QML_SOURCES_PATHS=./
-          # 拷贝依赖
-          linuxdeploy-x86_64.AppImage --plugin=qt --output=appimage --create-desktop-file --icon-file=${targetName}.svg --executable=bin/Release/${targetName} --appdir bin/release/
+          linuxdeploy-x86_64.AppImage --plugin=qt --output=appimage --create-desktop-file --icon-file=./dist/${targetName}.svg --executable=./dist/${targetName} --appdir ./package/
           mv ${{ env.targetName }}-*.AppImage ${{ env.targetName }}.AppImage
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.targetName }}_${{ matrix.os }}_${{matrix.qt_ver}}
+          name: ${{ env.targetName }}_${{ matrix.qt_arch }}_Qt${{ matrix.qt_ver }}
           path: ${{ env.targetName }}.AppImage
 
       - name: Upload release
@@ -106,6 +93,6 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ env.targetName }}.AppImage
-          asset_name: ${{ env.targetName }}_${{  github.ref_name }}_${{ matrix.os }}_Qt${{ matrix.qt_ver }}.AppImage
+          asset_name: ${{ env.targetName }}_${{  github.ref_name }}_${{ matrix.qt_arch }}_Qt${{ matrix.qt_ver }}.AppImage
           tag: ${{ github.ref }}
           overwrite: true
