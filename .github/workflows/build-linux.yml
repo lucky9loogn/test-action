@@ -22,7 +22,7 @@ jobs:
         os: [ubuntu-latest]
         include:
           - qt_ver: 6.8.1        
-            qt_arch: gcc_64
+            qt_arch: linux_gcc_64
 
     runs-on: ${{ matrix.os }}
 
@@ -48,7 +48,6 @@ jobs:
           cache: 'true'
           cache-key-prefix: 'install-qt-action'
           modules: 'qtshadertools qt5compat qtconnectivity'
-          aqtversion: '==3.1.19' # https://github.com/jurplel/install-qt-action/issues/270
 
       - name: Install dependencies
         run: |
