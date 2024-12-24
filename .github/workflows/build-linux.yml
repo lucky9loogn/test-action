@@ -66,12 +66,15 @@ jobs:
           cmake -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_BUILD_TYPE=Release -GNinja ..
           cmake --build . --target all --config Release --parallel
 
-      - name: Package
+      - name: Check if svg file exists
+        run: if [ ! -f "${targetName}.svg" ]; then echo "File not found, creating..."; touch ${targetName}.svg; fi
+
+      - name: package
         run: |
           # make sure Qt plugin finds QML sources so it can deploy the imported files
           export QML_SOURCES_PATHS=./
           # 拷贝依赖
-          linuxdeploy-x86_64.AppImage --plugin=qt --output=appimage --create-desktop-file --icon-file=logo.svg --executable=bin/Release/${targetName} --appdir bin/release/
+          linuxdeploy-x86_64.AppImage --plugin=qt --output=appimage --create-desktop-file --icon-file=${targetName}.svg --executable=bin/Release/${targetName} --appdir bin/release/
           mv ${{ env.targetName }}-*.AppImage ${{ env.targetName }}.AppImage
 
       - name: Upload artifact
