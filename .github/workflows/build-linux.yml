@@ -72,7 +72,7 @@ jobs:
           mkdir dist
           cp ./BleHelper/resources/images/icons/logo.svg ./dist/${targetName}.svg
           cp ./build/BleHelper/BleHelper ./dist/${targetName}
-          cp -r ./build/BleHelper/i18n ./dist/i18n
+          cp -r ./build/BleHelper/i18n ./package/usr/bin/i18n
 
       - name: Package
         run: |
