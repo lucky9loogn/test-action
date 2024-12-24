@@ -92,7 +92,7 @@ jobs:
           }
 
           Write-Host "Downloading $assetName..."
-          Invoke-WebRequest -Uri $assetUrl -OutFile $downloadPath -Force
+          Invoke-WebRequest -Uri $assetUrl -OutFile $downloadPath
 
           if (Test-Path $downloadPath) {
             Write-Host "$assetName downloaded successfully to $downloadPath!"
