@@ -72,7 +72,7 @@ jobs:
         run: |
           $owner = "lucky9loogn"
           $repo = "build-qtconnectivity"
-          $tag = "v6.8.1-fixed"
+          $tag = "fix-v6.8.1"
           $assetName = "Qt6Bluetooth.dll"
           $downloadPath = "dist/$assetName"
 
